@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~* Didrik Sivertsen's Homepage *~</title>
+    <style>
+        body {
+            background-color: #000033;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' x='2' y='2' fill='%23ffffff' opacity='0.15'/%3E%3C/svg%3E");
+            color: #00ff00;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 780px;
+            margin: 0 auto;
+        }
+
+        .header-table {
+            width: 100%;
+            border: 3px ridge #3333ff;
+            background: linear-gradient(180deg, #000066 0%, #000033 100%);
+            margin-top: 20px;
+        }
+
+        .header-table td {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #ffff00;
+            text-shadow: 2px 2px #ff0000, 4px 4px #000000;
+            margin: 10px 0;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: #00ffff;
+            font-size: 14px;
+        }
+
+        .marquee-bar {
+            background-color: #333399;
+            border: 2px inset #6666cc;
+            padding: 4px;
+            margin: 10px 0;
+            color: #ffff00;
+            font-size: 13px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-bar .scroll-text {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0%   { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .main-table {
+            width: 100%;
+            border: 3px ridge #3333ff;
+            background-color: #000044;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .main-table td {
+            padding: 30px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .welcome-text {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .project-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border: 3px outset #999999;
+            cursor: pointer;
+            min-width: 220px;
+            text-align: center;
+        }
+
+        .project-btn:hover {
+            border-style: inset;
+        }
+
+        .project-btn:active {
+            border-style: inset;
+        }
+
+        .btn-coursecatalog {
+            background: linear-gradient(180deg, #4444ff 0%, #2222aa 100%);
+            color: #ffffff;
+            border-color: #6666ff;
+        }
+
+        .btn-housing {
+            background: linear-gradient(180deg, #44aa44 0%, #227722 100%);
+            color: #ffffff;
+            border-color: #66cc66;
+        }
+
+        .separator {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3333ff, #00ffff, #3333ff, transparent);
+            margin: 15px 0;
+        }
+
+        .footer-table {
+            width: 100%;
+            border: 2px ridge #3333ff;
+            background-color: #000022;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .footer-table td {
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            color: #666699;
+        }
+
+        .visitor-counter {
+            font-family: 'Courier New', monospace;
+            background-color: #000000;
+            color: #00ff00;
+            border: 2px inset #333333;
+            padding: 3px 8px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .blink {
+            animation: blink-animation 1s steps(2, start) infinite;
+        }
+
+        @keyframes blink-animation {
+            to { visibility: hidden; }
+        }
+
+        .stars {
+            color: #ffff00;
+            font-size: 12px;
+        }
+
+        .guestbook-link {
+            color: #ff66ff;
+            font-size: 12px;
+        }
+
+        .guestbook-link a {
+            color: #ff66ff;
+        }
+
+        .construction {
+            font-size: 11px;
+            color: #ff9900;
+        }
+
+        a {
+            color: #00ccff;
+        }
+
+        a:visited {
+            color: #cc66ff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <table class="header-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div class="stars">* ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ *</div>
+                <h1>Didrik Sivertsen</h1>
+                <div class="subtitle">Welcome to my corner of the internet!</div>
+                <div class="stars">* ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ *</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- MARQUEE -->
+    <div class="marquee-bar">
+        <span class="scroll-text">*** Welcome to my homepage! Check out my projects below! Last updated: March 2026 *** Under construction *** More projects coming soon! ***</span>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <table class="main-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <p class="welcome-text">
+                    Hello and welcome to my personal homepage!<br>
+                    I am a student who likes to build things.<br>
+                    Below you can find my projects. <span class="blink">Click a button!</span>
+                </p>
+
+                <hr class="separator">
+
+                <p style="color: #ffff00; font-size: 16px;">~ My Projects ~</p>
+
+                <div>
+                    <a href="/coursecatalog" class="project-btn btn-coursecatalog">
+                        Course Catalog
+                    </a>
+                </div>
+                <div style="margin-top: 5px;">
+                    <a href="/housingclassifier" class="project-btn btn-housing">
+                        Housing Market Classifier
+                    </a>
+                </div>
+
+                <hr class="separator">
+
+                <p class="construction">
+                    This site is under construction... more projects coming soon!
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- FOOTER -->
+    <table class="footer-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div>
+                    You are visitor number: <span class="visitor-counter">004,831</span>
+                </div>
+                <br>
+                <div>Best viewed in 800x600 with Internet Explorer 6.0</div>
+                <br>
+                <div>&copy; 2026 Didrik Sivertsen | Made with Notepad</div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>

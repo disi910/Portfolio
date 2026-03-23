@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housing Market Classifier - Didrik Sivertsen</title>
+    <style>
+        body {
+            background-color: #000033;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' x='2' y='2' fill='%23ffffff' opacity='0.15'/%3E%3C/svg%3E");
+            color: #00ff00;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 780px;
+            margin: 0 auto;
+        }
+
+        .header-table {
+            width: 100%;
+            border: 3px ridge #33aa33;
+            background: linear-gradient(180deg, #003300 0%, #001a00 100%);
+            margin-top: 20px;
+        }
+
+        .header-table td {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #ffff00;
+            text-shadow: 2px 2px #ff0000, 4px 4px #000000;
+            margin: 10px 0;
+        }
+
+        h2 {
+            color: #00ffff;
+            font-size: 18px;
+            border-bottom: 1px dashed #00ffff;
+            padding-bottom: 5px;
+        }
+
+        .main-table {
+            width: 100%;
+            border: 3px ridge #33aa33;
+            background-color: #001a00;
+            margin-top: 10px;
+        }
+
+        .main-table td {
+            padding: 20px 30px;
+            vertical-align: top;
+        }
+
+        .content-text {
+            color: #cccccc;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .tech-list {
+            color: #00ff00;
+            font-size: 13px;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .tech-list li::before {
+            content: ">> ";
+            color: #ffff00;
+        }
+
+        .separator {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #33aa33, #00ff00, #33aa33, transparent);
+            margin: 15px 0;
+        }
+
+        .info-table {
+            width: 100%;
+            border: 2px inset #336633;
+            background-color: #002200;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .info-table th {
+            background-color: #003300;
+            color: #ffff00;
+            padding: 8px;
+            border: 1px solid #336633;
+            text-align: left;
+        }
+
+        .info-table td {
+            color: #cccccc;
+            padding: 8px;
+            border: 1px solid #336633;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            background: linear-gradient(180deg, #666666 0%, #444444 100%);
+            color: #ffffff;
+            border: 3px outset #888888;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            border-style: inset;
+        }
+
+        .construction {
+            color: #ff9900;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .stars {
+            color: #00ff00;
+            font-size: 12px;
+        }
+
+        .footer-table {
+            width: 100%;
+            border: 2px ridge #33aa33;
+            background-color: #001100;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .footer-table td {
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            color: #336633;
+        }
+
+        a {
+            color: #00ccff;
+        }
+
+        a:visited {
+            color: #cc66ff;
+        }
+
+        .blink {
+            animation: blink-animation 1s steps(2, start) infinite;
+        }
+
+        @keyframes blink-animation {
+            to { visibility: hidden; }
+        }
+
+        .label-hot { color: #ff4444; font-weight: bold; }
+        .label-stable { color: #ffff00; font-weight: bold; }
+        .label-cooling { color: #4444ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <table class="header-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div class="stars">~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~</div>
+                <h1>Housing Market Classifier</h1>
+                <div style="color: #00ffff; font-size: 13px;">Norwegian Property Market Risk Prediction with Machine Learning</div>
+                <div class="stars">~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- MAIN CONTENT -->
+    <table class="main-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <h2>What is this?</h2>
+                <p class="content-text">
+                    This project classifies the Norwegian housing market into three states:
+                    <span class="label-hot">HOT</span> (prices rising &gt;2%),
+                    <span class="label-stable">STABLE</span> (prices roughly flat), and
+                    <span class="label-cooling">COOLING</span> (prices dropping &gt;0.5%).
+                    <br><br>
+                    It uses real economic data from Statistics Norway (SSB) including property
+                    price indices, policy interest rates, CPI, population changes, and property
+                    sales volumes across 8 Norwegian regions.
+                </p>
+
+                <hr class="separator">
+
+                <h2>How does it work?</h2>
+                <p class="content-text">
+                    The Random Forest classifier is implemented <b>from scratch</b> in Python &mdash;
+                    no scikit-learn for the core algorithm! It builds 50 decision trees, each trained
+                    on a bootstrap sample of the data, using Gini impurity for splits.
+                    <br><br>
+                    The model uses engineered features like price momentum, rate-price interactions,
+                    supply/demand imbalance scores, and regional strength indicators. Data is split
+                    chronologically (65/20/15) to respect the time-series nature.
+                </p>
+
+                <hr class="separator">
+
+                <h2>Data Sources</h2>
+                <table class="info-table">
+                    <tr>
+                        <th>Dataset</th>
+                        <th>Source</th>
+                        <th>Period</th>
+                    </tr>
+                    <tr>
+                        <td>Property Price Index</td>
+                        <td>SSB Table 07221</td>
+                        <td>2020-2024 (quarterly)</td>
+                    </tr>
+                    <tr>
+                        <td>Policy Rate</td>
+                        <td>SSB Table 10701</td>
+                        <td>2020-2024 (monthly &rarr; quarterly)</td>
+                    </tr>
+                    <tr>
+                        <td>Consumer Price Index</td>
+                        <td>SSB Table 03013</td>
+                        <td>2020-2024 (monthly &rarr; quarterly)</td>
+                    </tr>
+                    <tr>
+                        <td>Population Change</td>
+                        <td>SSB Table 01222</td>
+                        <td>2020-2024 (quarterly)</td>
+                    </tr>
+                    <tr>
+                        <td>Property Sales Volume</td>
+                        <td>SSB Table 10187</td>
+                        <td>2020-2024 (quarterly)</td>
+                    </tr>
+                </table>
+
+                <hr class="separator">
+
+                <h2>Tech Stack</h2>
+                <ul class="tech-list">
+                    <li>Python 3.12+</li>
+                    <li>Random Forest (built from scratch!)</li>
+                    <li>Pandas &amp; NumPy for data processing</li>
+                    <li>Matplotlib &amp; Seaborn for visualization</li>
+                    <li>scikit-learn (only for evaluation metrics)</li>
+                </ul>
+
+                <hr class="separator">
+
+                <h2>Regions Covered</h2>
+                <p class="content-text">
+                    Oslo, Rogaland, Vestland, Trondheim, Innlandet, Agder, Nordland, and More og Romsdal
+                </p>
+
+                <hr class="separator">
+
+                <p class="construction">
+                    <span class="blink">***</span>
+                    This page is under construction... interactive demo coming soon!
+                    <span class="blink">***</span>
+                </p>
+
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="/" class="back-btn">&laquo; Back to Homepage</a>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- FOOTER -->
+    <table class="footer-table" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div>&copy; 2026 Didrik Sivertsen | <a href="/">Back to Homepage</a></div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>

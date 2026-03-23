@@ -1,0 +1,80 @@
+# Docker Compose orchestrates all containers for didriksi.com
+#
+# Architecture:
+#   Internet -> nginx (port 80) -> routes to:
+#     /                    -> landing (static HTML)
+#     /coursecatalog/      -> coursecatalog-frontend (React app)
+#     /coursecatalog/api/  -> coursecatalog-api (FastAPI)
+#     /housingclassifier/  -> landing (static HTML, different path)
+#
+# Run with: docker compose up --build
+# Run in background: docker compose up --build -d
+# Stop: docker compose down
+# View logs: docker compose logs -f [service-name]
+
+services:
+
+  # === REVERSE PROXY ===
+  # The only container exposed to the internet (port 80)
+  # Routes all traffic to the correct internal container
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"              # host:container - only this is accessible from outside
+    volumes:
+      # Mount our config file into the nginx container
+      # This means you can edit nginx.conf without rebuilding the container
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro  # :ro = read-only
+    depends_on:
+      - landing
+      - coursecatalog-frontend
+      - coursecatalog-api
+    restart: unless-stopped   # Auto-restart if it crashes
+
+  # === LANDING PAGE ===
+  # Serves the retro homepage and housing classifier static page
+  # Internal only - nginx proxies traffic to it
+  landing:
+    build: ./landing          # Build from ./landing/Dockerfile
+    restart: unless-stopped
+
+  # === COURSECATALOG FRONTEND ===
+  # React app built with Vite, served by nginx inside the container
+  # Internal only - main nginx proxies /coursecatalog/ traffic here
+  coursecatalog-frontend:
+    build: ./CourseCatalog/apps/web/ififag   # Build from the frontend Dockerfile
+    restart: unless-stopped
+
+  # === COURSECATALOG API ===
+  # FastAPI backend that talks to PostgreSQL
+  # Internal only - main nginx proxies /coursecatalog/api/ traffic here
+  coursecatalog-api:
+    build: ./CourseCatalog/apps/api          # Build from the API Dockerfile
+    environment:
+      # The API connects to the database using this URL
+      # "coursecatalog-db" is the hostname of the DB container on Docker's network
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-changeme}@coursecatalog-db:5432/coursecatalog
+      - SECRET_KEY=${SECRET_KEY:-supersecretkey}
+    depends_on:
+      - coursecatalog-db     # Wait for database to start first
+    restart: unless-stopped
+
+  # === DATABASE ===
+  # PostgreSQL database for CourseCatalog
+  # Not exposed to the internet - only coursecatalog-api can reach it
+  coursecatalog-db:
+    image: postgres:16-alpine  # Official PostgreSQL image (Alpine = small)
+    environment:
+      POSTGRES_DB: coursecatalog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}  # Set in .env file for production!
+    volumes:
+      # Named volume persists database data across container restarts
+      # Without this, all data would be lost when the container is recreated
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+# Named volumes - Docker manages where these are stored on disk
+# Run 'docker volume ls' to see them, 'docker volume inspect pgdata' for details
+volumes:
+  pgdata:

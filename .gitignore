@@ -1,0 +1,13 @@
+# Environment variables (contains DB passwords, secrets)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docker volumes (if mounted locally)
+pgdata/
