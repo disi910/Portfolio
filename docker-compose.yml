@@ -55,6 +55,7 @@ services:
       # "coursecatalog-db" is the hostname of the DB container on Docker's network
       - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-changeme}@coursecatalog-db:5432/coursecatalog
       - SECRET_KEY=${SECRET_KEY:-supersecretkey}
+      - API_KEY=${API_KEY}
     depends_on:
       - coursecatalog-db     # Wait for database to start first
     restart: unless-stopped
