@@ -53,8 +53,8 @@ services:
     environment:
       # The API connects to the database using this URL
       # "coursecatalog-db" is the hostname of the DB container on Docker's network
-      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-changeme}@coursecatalog-db:5432/coursecatalog
-      - SECRET_KEY=${SECRET_KEY:-supersecretkey}
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:?DB_PASSWORD must be set in .env}@coursecatalog-db:5432/coursecatalog
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set in .env}
       - API_KEY=${API_KEY}
     depends_on:
       - coursecatalog-db     # Wait for database to start first
@@ -68,7 +68,7 @@ services:
     environment:
       POSTGRES_DB: coursecatalog
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}  # Set in .env file for production!
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
     volumes:
       # Named volume persists database data across container restarts
       # Without this, all data would be lost when the container is recreated
