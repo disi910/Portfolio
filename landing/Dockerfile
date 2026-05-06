@@ -10,3 +10,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # When someone visits the container, nginx serves files from /usr/share/nginx/html/
 COPY index.html /usr/share/nginx/html/
 COPY housingclassifier/ /usr/share/nginx/html/housingclassifier/
+COPY assets/ /usr/share/nginx/html/assets/

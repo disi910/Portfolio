@@ -162,6 +162,29 @@
             border-color: #0055aa;
         }
 
+        .badge-extension {
+            background-color: #cc6633;
+            color: var(--white);
+            border-color: #994422;
+        }
+
+        .project-link.with-logo {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .project-logo {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .project-link.with-logo .project-content {
+            flex: 1;
+        }
+
         .project-desc {
             font-size: 11px;
             color: var(--dark-gray);
@@ -213,12 +236,21 @@
                     <div class="project-title">Housing Market Classifier</div>
                     <div class="project-desc">Classifies the Norwegian housing market as HOT, STABLE, or COOLING using a Random Forest built from scratch.</div>
                 </a>
+                <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb"
+                   class="project-link with-logo" target="_blank" rel="noopener noreferrer">
+                    <img src="/assets/claude-logo.png" alt="Claude logo" class="project-logo">
+                    <div class="project-content">
+                        <span class="project-badge badge-extension">EXTENSION</span>
+                        <div class="project-title">Claude Usage Bar</div>
+                        <div class="project-desc">Chrome extension that surfaces your Claude usage and weekly limits at a glance. Available on the Chrome Web Store.</div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
 
     <div class="status-bar">
-        <a href="/coursecatalog">Course Catalog</a> | <a href="/housingclassifier">Housing Classifier</a> | &copy; 2026 Didrik Sivertsen
+        <a href="/coursecatalog">Course Catalog</a> | <a href="/housingclassifier">Housing Classifier</a> | <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer">Claude Usage Bar</a> | &copy; 2026 Didrik Sivertsen
     </div>
 
 </body>
