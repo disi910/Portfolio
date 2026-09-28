@@ -176,7 +176,7 @@
     function renderFeedError(err) {
         timeline.setAttribute('aria-busy', 'false');
         if (state.events.size) {
-            feedStatus.textContent = 'Connection lost — showing cached activity';
+            feedStatus.textContent = 'Connection lost, showing cached activity';
             return;
         }
         const retry = el('button', { class: 'btn', type: 'button' }, 'Retry');
@@ -189,7 +189,7 @@
                 el('div', { class: 'title-bar' }, el('div', { class: 'title-bar-text' }, 'live_feed.log')),
                 el('div', { class: 'dialog' },
                     el('img', { class: 'dialog-icon', src: '/assets/icons/error.svg', alt: '' }),
-                    el('p', {}, 'The activity service is not responding. It may be restarting — try again in a minute.')),
+                    el('p', {}, 'The activity service is not responding. It may be restarting, so try again in a minute.')),
                 el('div', { class: 'dialog-actions' }, retry))));
         feedStatus.textContent = `Offline (${err.message})`;
     }
@@ -327,7 +327,7 @@
                     el('time', { datetime: when.toISOString(), title: when.toLocaleString() },
                         when.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })));
             })
-            : [el('li', { class: 'playlist-empty' }, '— no history —')]));
+            : [el('li', { class: 'playlist-empty' }, 'no history')]));
     }
 
     async function loadMusic() {

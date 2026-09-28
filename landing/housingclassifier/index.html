@@ -66,7 +66,7 @@
             <img src="img/confusion_matrix.png" alt="Confusion matrix showing validation and test results for GradientBoosting classifier" class="chart-img">
             <p class="caption">
                 Validation: 207/237 correct. Test: 154/178 correct. The model reliably identifies
-                Hot and Cooling markets (F1 &ge; 0.91). Stable is the hardest class (F1 = 0.69) &mdash;
+                Hot and Cooling markets (F1 &ge; 0.91). Stable is the hardest class (F1 = 0.69);
                 most errors come from Stable markets being misclassified as Hot or Cooling.
             </p>
         </div>
@@ -136,7 +136,7 @@
         <div class="window-body sunken">
             <p>
                 Started with a <b>Random Forest built from scratch</b> (no scikit-learn) to
-                understand the fundamentals &mdash; Gini impurity, bootstrap sampling, majority voting.
+                understand the fundamentals: Gini impurity, bootstrap sampling, majority voting.
                 The initial model trained on 80 manually downloaded samples achieved 67% validation
                 accuracy and couldn't predict Stable at all.
             </p>
@@ -148,7 +148,7 @@
                 mortgage rates, population growth, and household income.
             </p>
             <p>
-                Compared <b>RandomForest</b> (balanced class weights) against <b>GradientBoosting</b> &mdash;
+                Compared <b>RandomForest</b> (balanced class weights) against <b>GradientBoosting</b>.
                 Gradient Boosting won on macro-F1 and became the final model.
             </p>
         </div>
