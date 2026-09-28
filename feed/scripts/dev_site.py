@@ -1,7 +1,7 @@
 """Local preview: serve landing/ and forward /api/* to the feed service, like nginx does in production.
 
-    # terminal 1 (from feed/):  uvicorn app.main:create_app --factory --port 8000
-    # terminal 2 (from feed/):  python3 scripts/dev_site.py
+    # terminal 1 (from feed/, venv active):  python -m uvicorn app.main:create_app --factory --port 8000
+    # terminal 2 (from feed/):               python scripts/dev_site.py
     # then open http://127.0.0.1:8080
 
 Standard library only. For local testing, not for production.

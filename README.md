@@ -87,7 +87,17 @@ curl -X POST https://didriksi.com/api/status -H "X-API-Key: $FEED_API_KEY" \
 
 **Privacy:** the feed only uses public data (public GitHub events, public LeetCode/Letterboxd profiles). Spotify is the exception — it exposes what you're listening to in near real time, so leave its variables empty if you don't want that.
 
-**Tests:** `cd feed && pip install -r requirements-dev.txt && pytest`
+**Run locally** (Python 3.10+). Use `python -m ...` so the venv's interpreter is used even if another environment such as conda's `(base)` is active:
+```bash
+cd feed
+python3 -m venv .venv && source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=... SPOTIFY_REFRESH_TOKEN=...   # any sources you want
+python -m uvicorn app.main:create_app --factory --port 8000     # terminal 1
+python scripts/dev_site.py                                       # terminal 2, then open http://127.0.0.1:8080
+```
+
+**Tests:** `cd feed && python -m pytest`
 
 HTTP is redirected to HTTPS. SSL certs are mounted from the host's `/etc/letsencrypt/`.
 
