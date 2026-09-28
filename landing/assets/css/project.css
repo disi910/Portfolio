@@ -1,0 +1,67 @@
+/* Project detail pages (e.g. /housingclassifier/) */
+
+.page-head { display: flex; flex-direction: column; gap: 10px; }
+.page-head .toolbar { padding: 0; }
+.page-head h1 { color: #fff; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45); font-size: 32px; }
+.page-head .lede { color: #e8ffff; max-width: 680px; }
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.stat-box {
+    background: #000;
+    box-shadow: var(--bevel-in);
+    padding: 8px 10px;
+    text-align: center;
+}
+.stat-box .num {
+    font-family: var(--font-mono);
+    font-size: 30px;
+    line-height: 1;
+    color: #00e000;
+    text-shadow: 0 0 4px rgba(0, 255, 0, 0.45);
+}
+.stat-box .label { font-size: 11px; color: #bdbdbd; }
+
+.label-hot { color: #c0161f; font-weight: bold; }
+.label-stable { color: #a36b00; font-weight: bold; }
+.label-cooling { color: #0033cc; font-weight: bold; }
+
+.chart-img {
+    display: block;
+    width: 100%;
+    background: #fff;
+    box-shadow: var(--bevel-in);
+    padding: 4px;
+    margin-bottom: 8px;
+    image-rendering: auto;
+}
+
+.caption { font-size: 12px; color: var(--text-muted); }
+
+.chip-list { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; }
+.chip-list li {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: var(--face);
+    box-shadow: var(--bevel-out);
+}
+.chip-list.teal li { background: var(--acc-teal); color: #fff; box-shadow: inset -1px -1px rgba(0,0,0,0.35), inset 1px 1px rgba(255,255,255,0.35); }
+
+.pipeline {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    line-height: 1.2;
+    color: #00e000;
+    background: #000;
+    box-shadow: var(--bevel-in);
+    padding: 10px 14px;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.window-body.sunken > .table-wrap + .caption,
+.window-body.sunken > p + .table-wrap { margin-top: 8px; }

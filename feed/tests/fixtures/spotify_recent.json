@@ -1,0 +1,9 @@
+{"items": [
+  {"played_at": "2026-09-28T12:00:00.000Z",
+   "track": {"name": "Nights", "artists": [{"name": "Frank Ocean"}], "album": {"images": []},
+             "external_urls": {"spotify": "https://open.spotify.com/track/n"}}},
+  {"played_at": "2026-09-28T11:55:00.000Z",
+   "track": {"name": "Get Lucky", "artists": [{"name": "Daft Punk"}, {"name": "Pharrell Williams"}],
+             "album": {"images": [{"url": "https://i.scdn.co/image/x", "width": 300, "height": 300}]},
+             "external_urls": {"spotify": "https://open.spotify.com/track/g"}}}
+]}

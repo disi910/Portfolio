@@ -1,6 +1,6 @@
 # Portfolio
 
-Personal portfolio site at **didriksi.com** — a Docker Compose monorepo with a retro landing page, CourseCatalog app, and HousingMarketClassifier.
+Personal portfolio site at **didriksi.com** — a Docker Compose monorepo with a Windows 98-style landing page (about, live activity feed, Spotify player, projects), the CourseCatalog app, and the HousingMarketClassifier write-up.
 
 ## Deployment (VPS)
 
@@ -12,6 +12,7 @@ Personal portfolio site at **didriksi.com** — a Docker Compose monorepo with a
   DB_PASSWORD=<postgres password>
   SECRET_KEY=<api secret key>
   API_KEY=<api key>
+  # optional activity feed settings - see .env.example
   ```
 
 ### Deploy
@@ -53,6 +54,40 @@ All traffic enters via Nginx on ports 80/443:
 - `/coursecatalog/` → CourseCatalog React SPA
 - `/coursecatalog/api/` → CourseCatalog FastAPI backend
 - `/housingclassifier/` → HousingMarketClassifier static page
+- `/api/` → activity feed service (`feed/`, FastAPI + SQLite)
+
+## Design system
+All pages share `landing/assets/css/win98.css` (tokens + window, button, taskbar, list-view components) and the icons in `landing/assets/icons/`. Pages add their own layout CSS (`home.css`, `project.css`) and include the same taskbar markup plus `assets/js/taskbar.js`. CourseCatalog vendors a copy of the same tokens in its own repo so it builds standalone.
+
+Preview locally without the backend: `cd landing && python3 -m http.server 8765`, then open `http://localhost:8765/?demo` (the `?demo` flag renders bundled sample data from `landing/assets/demo/`).
+
+## Activity feed (`feed/`)
+Polls public activity into SQLite and serves it to the landing page:
+
+| Source | What shows up | Config | Poll |
+|---|---|---|---|
+| GitHub | pushes, merged/opened PRs, new repos, releases, stars | `GITHUB_USERNAME`, optional `GITHUB_TOKEN` | 5 min |
+| LeetCode | accepted submissions with difficulty | `LEETCODE_USERNAME` | 10 min |
+| Letterboxd | films logged, with rating | `LETTERBOXD_USERNAME` | 30 min |
+| Status | manual one-liners you post | `FEED_API_KEY` | — |
+| Spotify | now playing + recently played (separate window, not stored) | `SPOTIFY_CLIENT_ID/SECRET/REFRESH_TOKEN` | on request, 30 s cache |
+
+Every source is optional; one failing source backs off (up to 1 h) without affecting the others.
+
+Endpoints (behind `/api/`): `GET /feed?limit=&before=&source=`, `GET /music`, `POST /status`, `DELETE /status/{id}`, `GET /health`.
+
+**Spotify setup (one time):** create an app at developer.spotify.com with redirect URI `http://127.0.0.1:8888/callback`, then on your own machine run
+`SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=... python feed/scripts/spotify_auth.py` and put the printed refresh token in `.env`.
+
+**Post a status:**
+```bash
+curl -X POST https://didriksi.com/api/status -H "X-API-Key: $FEED_API_KEY" \
+     -H "Content-Type: application/json" -d '{"text": "Exam prep week", "url": null}'
+```
+
+**Privacy:** the feed only uses public data (public GitHub events, public LeetCode/Letterboxd profiles). Spotify is the exception — it exposes what you're listening to in near real time, so leave its variables empty if you don't want that.
+
+**Tests:** `cd feed && pip install -r requirements-dev.txt && pytest`
 
 HTTP is redirected to HTTPS. SSL certs are mounted from the host's `/etc/letsencrypt/`.
 

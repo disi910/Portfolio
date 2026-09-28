@@ -1,0 +1,75 @@
+{
+ "enabled": true,
+ "now_playing": {
+  "title": "Everything In Its Right Place",
+  "artist": "Radiohead",
+  "album": "Kid A",
+  "art": null,
+  "url": "https://open.spotify.com/",
+  "progress_ms": 94000,
+  "duration_ms": 251000,
+  "is_playing": true
+ },
+ "recent": [
+  {
+   "title": "Motion Sickness",
+   "artist": "Phoebe Bridgers",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T14:22:00Z"
+  },
+  {
+   "title": "Nights",
+   "artist": "Frank Ocean",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T14:18:00Z"
+  },
+  {
+   "title": "Kyoto",
+   "artist": "Phoebe Bridgers",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T14:13:00Z"
+  },
+  {
+   "title": "Redbone",
+   "artist": "Childish Gambino",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T14:08:00Z"
+  },
+  {
+   "title": "Pink + White",
+   "artist": "Frank Ocean",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T14:03:00Z"
+  },
+  {
+   "title": "Heat Waves",
+   "artist": "Glass Animals",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T13:57:00Z"
+  },
+  {
+   "title": "Something About Us",
+   "artist": "Daft Punk",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T13:52:00Z"
+  },
+  {
+   "title": "Digital Love",
+   "artist": "Daft Punk",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T13:48:00Z"
+  },
+  {
+   "title": "505",
+   "artist": "Arctic Monkeys",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T13:43:00Z"
+  },
+  {
+   "title": "Let It Happen",
+   "artist": "Tame Impala",
+   "url": "https://open.spotify.com/",
+   "played_at": "2026-09-28T13:35:00Z"
+  }
+ ]
+}
