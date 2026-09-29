@@ -65,3 +65,23 @@
 
 .window-body.sunken > .table-wrap + .caption,
 .window-body.sunken > p + .table-wrap { margin-top: 8px; }
+
+.page-head .toolbar .btn img { width: 14px; height: 14px; }
+
+/* Retraction / info notice */
+.notice .dialog { padding: 6px 4px; }
+.notice .dialog p { margin: 0; }
+.notice .dialog-icon { width: 32px; height: 32px; }
+
+.list-view tbody tr.row-highlight td { background: var(--tooltip); }
+
+.plain-list { padding-left: 20px; margin-bottom: 8px; }
+.plain-list li { margin-bottom: 6px; }
+
+code {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    background: var(--face-light);
+    padding: 0 3px;
+}
+.list-view tbody tr:hover td code { background: transparent; }

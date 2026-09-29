@@ -221,29 +221,69 @@
 .project-grid {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
 }
+@media (max-width: 700px) { .project-grid { grid-template-columns: 1fr; } }
 .project {
+    position: relative;
     display: flex; gap: 12px;
-    padding: 10px;
+    padding: 10px 12px 12px;
     height: 100%;
     color: var(--text);
-    text-decoration: none;
     border: 1px dotted transparent;
 }
-.project:hover, .project:focus-visible {
+.project:hover, .project:focus-within {
     background: var(--select);
     color: var(--select-text);
     border-color: #fff;
-    outline: none;
 }
-.project:hover .muted, .project:focus-visible .muted,
-.project:hover .stack, .project:focus-visible .stack { color: #dcdcff; }
+.project:hover .muted, .project:focus-within .muted { color: #dcdcff; }
+.project-body { min-width: 0; flex: 1; padding-right: 44px; }
 .project h3 { margin: 4px 0 2px; }
-.project p { font-size: 12px; margin-bottom: 4px; }
-.project .stack { font-size: 15px; color: var(--shadow); }
+.project p { font-size: 12px; margin-bottom: 6px; }
 .project-icon { width: 32px; height: 32px; flex-shrink: 0; image-rendering: pixelated; }
+img.project-icon[src$=".png"] { image-rendering: auto; }
+
+/* The title link covers the whole card, so the card stays one big click target. */
+.project-link { color: inherit; text-decoration: none; }
+.project-link::after { content: ""; position: absolute; inset: 0; }
+.project-link:hover { text-decoration: underline; }
+.project-link:focus-visible { outline: none; }
+.project-link:focus-visible::after { outline: 1px dotted #fff; outline-offset: -4px; }
+
+/* Corner actions sit above the stretched link. */
+.project-actions {
+    position: absolute; top: 8px; right: 8px; z-index: 1;
+    display: flex; align-items: center; gap: 4px;
+}
+.icon-btn {
+    width: 24px; height: 24px;
+    display: grid; place-items: center;
+    background: var(--face);
+    box-shadow: var(--bevel-out);
+}
+.icon-btn:active { box-shadow: var(--bevel-btn-pressed); }
+.icon-btn img { width: 14px; height: 14px; }
+.icon-btn:focus-visible { outline: 1px dotted var(--text); outline-offset: 2px; }
+.external-mark {
+    font: bold 18px/1 var(--font-ui);
+    width: 20px; text-align: center;
+    color: var(--title-a);
+}
+.project:hover .external-mark, .project:focus-within .external-mark { color: #fff; }
+
+/* Tool tags: rectangular chips, readable on both the white and the selected card. */
+.tool-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.tool-tags li {
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 7px;
+    color: var(--text);
+    background: var(--face);
+    box-shadow: inset -1px -1px var(--shadow), inset 1px 1px var(--hilight);
+    white-space: nowrap;
+}
 
 .projects .menu-bar { color: var(--text-muted); }
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Housing Market Classifier - Didrik Sivertsen</title>
-    <meta name="description" content="Classifying the Norwegian housing market as HOT, STABLE or COOLING with gradient boosting on SSB data.">
+    <meta name="description" content="Predicting next-quarter Norwegian housing market direction per county from SSB data, and why a seasonal baseline matches the model.">
     <link rel="icon" href="/assets/icons/chart.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,204 +19,307 @@
     <header class="page-head">
         <div class="toolbar">
             <a href="/" class="btn btn-sm">&laquo; Back to homepage</a>
+            <a href="https://github.com/disi910/HousingMarketClassifier" class="btn btn-sm" target="_blank" rel="noopener"><img src="/assets/icons/github.svg" alt="">View on GitHub</a>
             <span class="tag tag-navy">ML project</span>
         </div>
         <h1>Housing Market Classifier</h1>
-        <p class="lede">Classifies Norwegian county housing markets as HOT, STABLE or COOLING for the next quarter, using 20 years of public SSB statistics.</p>
+        <p class="lede">
+            Predicts where the Norwegian housing market is heading next quarter. For each of Norway's 15 counties,
+            it labels the coming quarter as <b>Hot</b>, <b>Stable</b> or <b>Cooling</b>, using macroeconomic data
+            from Statistics Norway (SSB). The short version of the result: the model does not beat a simple
+            seasonal baseline.
+        </p>
     </header>
+
+    <!-- Retraction notice -->
+    <section class="window notice" role="note">
+        <div class="title-bar">
+            <div class="title-bar-text"><img src="/assets/icons/info.svg" alt="">Notice</div>
+            <div class="title-bar-controls" aria-hidden="true"><span>×</span></div>
+        </div>
+        <div class="window-body">
+            <div class="dialog">
+                <img class="dialog-icon" src="/assets/icons/info.svg" alt="">
+                <p>
+                    Earlier versions of this project reported <b>86.5% test accuracy</b>. That number came from a
+                    train/test split that leaked, and it has been retracted. See <a href="#leakage">The leakage bug</a> below.
+                </p>
+            </div>
+        </div>
+    </section>
 
     <!-- Results -->
     <section class="window">
         <div class="title-bar">
-            <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">results.txt</div>
+            <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">results.json</div>
             <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
         </div>
         <div class="window-body">
             <div class="stats-row">
-                <div class="stat-box"><div class="num">87.3%</div><div class="label">Validation accuracy</div></div>
-                <div class="stat-box"><div class="num">86.5%</div><div class="label">Test accuracy</div></div>
-                <div class="stat-box"><div class="num">0.834</div><div class="label">Test macro F1</div></div>
-                <div class="stat-box"><div class="num">1,200</div><div class="label">Samples</div></div>
-                <div class="stat-box"><div class="num">35</div><div class="label">Features</div></div>
+                <div class="stat-box"><div class="num">645</div><div class="label">County-quarters (2014+)</div></div>
+                <div class="stat-box"><div class="num">32</div><div class="label">Features</div></div>
+                <div class="stat-box"><div class="num">7</div><div class="label">Unseen test quarters</div></div>
+                <div class="stat-box"><div class="num">0.639</div><div class="label">Random Forest test macro-F1</div></div>
+                <div class="stat-box"><div class="num">0.642</div><div class="label">Seasonal lookup test macro-F1</div></div>
             </div>
 
-            <p class="caption">Per-class test performance:</p>
-            <div class="table-wrap" style="max-width: 480px;">
-                <table class="list-view">
-                    <thead>
-                        <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><span class="label-hot">Hot</span></td><td>0.89</td><td>0.93</td><td>0.91</td></tr>
-                        <tr><td><span class="label-stable">Stable</span></td><td>0.73</td><td>0.65</td><td>0.69</td></tr>
-                        <tr><td><span class="label-cooling">Cooling</span></td><td>0.90</td><td>0.92</td><td>0.91</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Confusion Matrix -->
-    <section class="window">
-        <div class="title-bar">
-            <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">confusion_matrix.png</div>
-            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
-        </div>
-        <div class="window-body">
-            <img src="img/confusion_matrix.png" alt="Confusion matrix showing validation and test results for GradientBoosting classifier" class="chart-img">
             <p class="caption">
-                Validation: 207/237 correct. Test: 154/178 correct. The model reliably identifies
-                Hot and Cooling markets (F1 &ge; 0.91). Stable is the hardest class (F1 = 0.69);
-                most errors come from Stable markets being misclassified as Hot or Cooling.
-            </p>
-        </div>
-    </section>
-
-    <!-- Feature Importance -->
-    <section class="window">
-        <div class="title-bar">
-            <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">feature_importance.png</div>
-            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
-        </div>
-        <div class="window-body">
-            <img src="img/feature_importance.png" alt="Top 15 features by Gini importance for GradientBoosting model" class="chart-img">
-            <p class="caption">
-                Seasonal quarter factor dominates (0.39 Gini importance), reflecting strong
-                seasonal patterns in Norwegian housing. Price acceleration, GDP-price interaction,
-                price index level, and price momentum round out the top 5.
-            </p>
-        </div>
-    </section>
-
-    <!-- Market States -->
-    <section class="window">
-        <div class="title-bar">
-            <div class="title-bar-text"><img src="/assets/icons/notepad.svg" alt="">market_states.txt</div>
-            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
-        </div>
-        <div class="window-body sunken">
-            <p>
-                Housing market conditions are identified by analyzing the balance between supply
-                (inventory) and demand (buyer activity):
+                The test set is 7 quarters the model never saw during training (2023K1 to 2024K3).
+                Only the model with the best validation score is evaluated on the test set, so Gradient Boosting has no test score.
             </p>
             <div class="table-wrap">
                 <table class="list-view">
                     <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th><span class="label-hot">Hot (Seller's)</span></th>
-                            <th><span class="label-stable">Stable (Balanced)</span></th>
-                            <th><span class="label-cooling">Cooling (Buyer's)</span></th>
-                        </tr>
+                        <tr><th>Model / baseline</th><th>Val macro-F1</th><th>Test macro-F1</th><th>Test accuracy</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td><b>Price appreciation</b></td><td>Rapidly rising</td><td>Moderate (~3%/yr)</td><td>Slowing / declining</td></tr>
-                        <tr><td><b>Inventory</b></td><td>Very low (&lt;3 mo)</td><td>Balanced (4&ndash;6 mo)</td><td>Rising / high</td></tr>
-                        <tr><td><b>Days on market</b></td><td>Very short</td><td>Average</td><td>Longer / rising</td></tr>
-                        <tr><td><b>Price reductions</b></td><td>Rare</td><td>Occasional</td><td>Increasing / frequent</td></tr>
-                        <tr><td><b>Bargaining power</b></td><td>Seller</td><td>Balanced</td><td>Buyer</td></tr>
+                        <tr><td>Majority class</td><td>0.221</td><td>0.197</td><td>41.9%</td></tr>
+                        <tr><td>Persistence</td><td>0.322</td><td>0.357</td><td>44.8%</td></tr>
+                        <tr class="row-highlight"><td><b>Seasonal lookup</b></td><td><b>0.627</b></td><td><b>0.642</b></td><td><b>92.4%</b></td></tr>
+                        <tr><td>Random Forest</td><td>0.590</td><td>0.639</td><td>91.4%</td></tr>
+                        <tr><td>Gradient Boosting</td><td>0.508</td><td>n/a</td><td>n/a</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p class="caption" style="margin-top: 8px;">
-                In this project, the labels are derived from next-quarter price index changes:
-                <span class="label-hot">HOT</span> (&gt;2%),
-                <span class="label-stable">STABLE</span> (&minus;0.5% to 2%), and
-                <span class="label-cooling">COOLING</span> (&lt;&minus;0.5%).
-            </p>
         </div>
     </section>
 
-    <!-- Approach -->
+    <!-- What this means -->
     <section class="window">
         <div class="title-bar">
-            <div class="title-bar-text"><img src="/assets/icons/notepad.svg" alt="">approach.txt</div>
+            <div class="title-bar-text"><img src="/assets/icons/notepad.svg" alt="">what_this_means.txt</div>
             <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
         </div>
         <div class="window-body sunken">
             <p>
-                Started with a <b>Random Forest built from scratch</b> (no scikit-learn) to
-                understand the fundamentals: Gini impurity, bootstrap sampling, majority voting.
-                The initial model trained on 80 manually downloaded samples achieved 67% validation
-                accuracy and couldn't predict Stable at all.
+                The Random Forest scores 0.003 macro-F1 <b>below</b> the seasonal lookup on the test set. A lookup table
+                that only knows "which quarter of the year is it" matches the full model.
             </p>
             <p>
-                Built an <b>automated SSB API pipeline</b> that fetches 10 statistical tables
-                programmatically, covering 2005&ndash;2024 across all 15 Norwegian counties.
-                This expanded the dataset to 1,200 samples with 35 engineered features
-                derived from house prices, CPI, unemployment, GDP, building permits,
-                mortgage rates, population growth, and household income.
+                This is the honest result, and also the most interesting one. Norwegian house prices follow a strong
+                yearly cycle: in the training window, 83% of Q1s are Hot and 77% of Q3s are Cooling. Since the label is
+                next quarter's raw price change sorted into three bins, the calendar almost decides the answer by itself.
             </p>
             <p>
-                Compared <b>RandomForest</b> (balanced class weights) against <b>GradientBoosting</b>.
-                Gradient Boosting won on macro-F1 and became the final model.
+                An ablation backs this up. Removing <code>seasonal_factor</code> and <code>quarter_num</code> drops the
+                Random Forest to 0.555 test macro-F1. Nearly all of its apparent skill comes from seasonality, and the
+                macroeconomic series add nothing on top of the calendar.
             </p>
         </div>
     </section>
 
-    <!-- Pipeline -->
+    <!-- Per-class -->
     <section class="window">
         <div class="title-bar">
-            <div class="title-bar-text"><img src="/assets/icons/exe.svg" alt="">C:\pipeline&gt;</div>
+            <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">per_class_test.txt</div>
             <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
         </div>
         <div class="window-body">
-            <div class="pipeline">fetch_ssb_data.py  &rarr;  data_parser.py  &rarr;  enhanced_features.py  &rarr;  train_model.py
-     (API)             (JSON&rarr;CSV)         (35 features)           (sklearn)</div>
+            <p class="caption">Random Forest on the test set:</p>
+            <div class="table-wrap" style="max-width: 520px;">
+                <table class="list-view">
+                    <thead>
+                        <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><span class="label-hot">Hot</span></td><td>0.98</td><td>1.00</td><td>0.99</td><td>44</td></tr>
+                        <tr><td><span class="label-stable">Stable</span></td><td>0.00</td><td>0.00</td><td>0.00</td><td>8</td></tr>
+                        <tr><td><span class="label-cooling">Cooling</span></td><td>0.88</td><td>0.98</td><td>0.93</td><td>53</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="caption" style="margin-top: 8px;">
+                The 91.4% accuracy looks better than it is. The model never predicts Stable, and Stable is only 8 of the
+                105 test rows, so missing all of them barely moves accuracy. Macro-F1 is the number to look at.
+            </p>
         </div>
     </section>
 
-    <div class="row row-2">
         <section class="window">
             <div class="title-bar">
-                <div class="title-bar-text"><img src="/assets/icons/globe.svg" alt="">Data Sources (SSB API)</div>
+                <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">confusion_matrix.png</div>
                 <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
             </div>
             <div class="window-body">
-                <div class="table-wrap">
-                    <table class="list-view">
-                        <thead><tr><th>Table</th><th>Feature</th></tr></thead>
-                        <tbody>
-                            <tr><td>03013</td><td>Consumer Price Index</td></tr>
-                            <tr><td>10701</td><td>Policy rate</td></tr>
-                            <tr><td>01222</td><td>Population change</td></tr>
-                            <tr><td>07221</td><td>House price index</td></tr>
-                            <tr><td>10187</td><td>Property sales volume</td></tr>
-                            <tr><td>13760</td><td>Unemployment rate</td></tr>
-                            <tr><td>03723</td><td>Building starts</td></tr>
-                            <tr><td>10748</td><td>Mortgage interest rates</td></tr>
-                            <tr><td>09171</td><td>GDP volume change</td></tr>
-                            <tr><td>06944</td><td>Household income</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="caption" style="margin-top: 6px;">
-                    Coverage: 2005&ndash;2024, 15 counties, quarterly.
-                    All fetched automatically via the SSB Statistikkbanken API.
+                <img src="img/confusion_matrix.png" alt="Random Forest confusion matrices for validation (2020K4 to 2022K4) and test (2023K1 to 2024K3). On test, Hot and Cooling are almost always right and no Stable quarter is predicted correctly." class="chart-img">
+                <p class="caption">
+                    Chronological split. On the test quarters, Hot and Cooling are almost always right, while 7 of the 8
+                    Stable quarters are predicted as Cooling.
+                </p>
+            </div>
+        </section>
+        <section class="window">
+            <div class="title-bar">
+                <div class="title-bar-text"><img src="/assets/icons/chart.svg" alt="">feature_importance.png</div>
+                <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+            </div>
+            <div class="window-body">
+                <img src="img/feature_importance.png" alt="Top 15 Random Forest features by Gini importance. seasonal_factor and quarter_num are the two most important." class="chart-img" style="max-width: 760px;">
+                <p class="caption">
+                    The two most important features are <code>seasonal_factor</code> and <code>quarter_num</code>:
+                    the same finding, showing up in the importances.
                 </p>
             </div>
         </section>
 
+    <!-- Leakage bug -->
+    <section class="window" id="leakage">
+        <div class="title-bar">
+            <div class="title-bar-text"><img src="/assets/icons/error.svg" alt="">the_leakage_bug.txt</div>
+            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+        </div>
+        <div class="window-body sunken">
+            <p>
+                The original evaluation was wrong, and fixing it changed the conclusion of the project.
+                <code>create_labels</code> returned its data sorted by region and quarter, and <code>train_model.py</code>
+                then took the first 65% of rows as training data under a comment that said "Time-based split".
+                Since the rows were sorted by county name first, the data was actually split alphabetically by county, not by time.
+            </p>
+            <div class="table-wrap">
+                <table class="list-view">
+                    <thead>
+                        <tr><th></th><th>Old (broken) split</th><th>New split</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><b>Train</b></td><td>Agder to Telemark, all years</td><td>2014K1 to 2020K3</td></tr>
+                        <tr><td><b>Validation</b></td><td>Troms, Tr&oslash;ndelag, most of Vestfold</td><td>2020K4 to 2022K4</td></tr>
+                        <tr><td><b>Test</b></td><td>Rest of Vestfold, Vestland, &Oslash;stfold</td><td>2023K1 to 2024K3</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top: 10px;">This leaked information in two ways:</p>
+            <ol class="plain-list">
+                <li>
+                    <b>Shared labels.</b> The 15 counties map to only 10 SSB price regions. Buskerud, Telemark, Vestfold and
+                    &Oslash;stfold share one price series, so their labels are identical every quarter. Most of the old test set
+                    had the same answer as a row the model had already trained on for that quarter.
+                </li>
+                <li>
+                    <b>The same quarters in train and test.</b> All 79 quarters showed up in both sets. National series like CPI,
+                    the policy rate and GDP are unique per quarter, so together they work like a timestamp. The model could learn
+                    "2016K2 was Hot" from one county and reuse it for another.
+                </li>
+            </ol>
+            <p>
+                The fix assigns whole quarters to each set, so the model is only scored on quarters it has never seen.
+                Two related bugs were fixed at the same time: several <code>.diff()</code> and <code>.rolling()</code> features
+                are now grouped by region, and z-scored features now use per-region expanding statistics that only look at the past.
+            </p>
+        </div>
+    </section>
+
+    <div class="row row-2">
+        <!-- Labels -->
         <section class="window">
             <div class="title-bar">
-                <div class="title-bar-text"><img src="/assets/icons/computer.svg" alt="">Model Properties</div>
+                <div class="title-bar-text"><img src="/assets/icons/notepad.svg" alt="">labels.txt</div>
                 <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
             </div>
             <div class="window-body">
+                <p class="caption">Each county-quarter is labelled by the price change in the <b>next</b> quarter. Features only use current and past data.</p>
                 <div class="table-wrap">
                     <table class="list-view">
+                        <thead><tr><th>Label</th><th>Next-quarter price change</th></tr></thead>
                         <tbody>
-                            <tr><td><b>Algorithm</b></td><td>Gradient Boosting</td></tr>
-                            <tr><td><b>Trees</b></td><td>200 estimators</td></tr>
-                            <tr><td><b>Max depth</b></td><td>5</td></tr>
-                            <tr><td><b>Learning rate</b></td><td>0.1</td></tr>
-                            <tr><td><b>Subsample</b></td><td>0.8</td></tr>
-                            <tr><td><b>Features</b></td><td>35 engineered</td></tr>
-                            <tr><td><b>Data split</b></td><td>65/20/15 chrono</td></tr>
-                            <tr><td><b>Compared vs</b></td><td>RandomForest (balanced)</td></tr>
+                            <tr><td><span class="label-hot">Hot</span></td><td>above +2.0%</td></tr>
+                            <tr><td><span class="label-stable">Stable</span></td><td>between &minus;0.5% and +2.0%</td></tr>
+                            <tr><td><span class="label-cooling">Cooling</span></td><td>below &minus;0.5%</td></tr>
                         </tbody>
                     </table>
                 </div>
+                <p class="caption" style="margin-top: 8px;">
+                    Compared against three baselines: majority class, persistence (repeat last quarter's label)
+                    and seasonal lookup (predict from the quarter of the year only).
+                </p>
+            </div>
+        </section>
+
+        <!-- Pipeline -->
+        <section class="window">
+            <div class="title-bar">
+                <div class="title-bar-text"><img src="/assets/icons/exe.svg" alt="">C:\pipeline&gt;</div>
+                <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+            </div>
+            <div class="window-body">
+                <div class="pipeline">fetch_ssb_data.py     (10 SSB tables)
+  &darr;
+data_parser.py        (JSON-stat2 to CSV,
+                       county harmonisation)
+  &darr;
+enhanced_features.py  (features + labels)
+  &darr;
+train_model.py        (chronological split,
+                       baselines, sklearn)</div>
+                <p class="caption" style="margin-top: 8px;">
+                    Norway redrew its county map in 2020 and 2024. The parser maps everything onto one consistent set of
+                    15 modern counties, so each series means the same thing across the whole period.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Data sources -->
+    <section class="window">
+        <div class="title-bar">
+            <div class="title-bar-text"><img src="/assets/icons/globe.svg" alt="">Data Sources (SSB API)</div>
+            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+        </div>
+        <div class="window-body">
+            <div class="table-wrap">
+                <table class="list-view">
+                    <thead>
+                        <tr><th>SSB table</th><th>What it measures</th><th>Frequency</th><th>Coverage</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>03013</td><td>Consumer price index (CPI)</td><td>Monthly</td><td>2005-2025</td></tr>
+                        <tr><td>10701</td><td>Norges Bank policy rate</td><td>Monthly</td><td>2014-2026</td></tr>
+                        <tr><td>01222</td><td>Population change by county</td><td>Quarterly</td><td>2005-2024</td></tr>
+                        <tr><td>07221</td><td>House price index by region</td><td>Quarterly</td><td>2005-2024</td></tr>
+                        <tr><td>10187</td><td>Property sales volume</td><td>Quarterly</td><td>2008-2024</td></tr>
+                        <tr><td>13760</td><td>Unemployment rate</td><td>Monthly</td><td>2006-2026</td></tr>
+                        <tr><td>03723</td><td>Building starts by county</td><td>Monthly</td><td>2005-2026</td></tr>
+                        <tr><td>10748</td><td>Mortgage interest rates</td><td>Monthly</td><td>2014-2025</td></tr>
+                        <tr><td>09171</td><td>GDP volume change</td><td>Quarterly</td><td>2005-2025</td></tr>
+                        <tr><td>06944</td><td>Household income by county</td><td>Annual</td><td>2005-2023</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div class="row row-2">
+        <!-- Limitations -->
+        <section class="window">
+            <div class="title-bar">
+                <div class="title-bar-text"><img src="/assets/icons/error.svg" alt="">known_limitations.txt</div>
+                <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+            </div>
+            <div class="window-body sunken">
+                <ul class="plain-list">
+                    <li><b>15 counties, but only 10 price series.</b> Several counties share a price series and therefore identical labels, so the effective sample is smaller than 645 rows suggests.</li>
+                    <li><b>Only 2014 onward by default.</b> The policy and mortgage rate series start in 2014. Missing values are now imputed with medians fitted on the training window only, instead of filled with zeros.</li>
+                    <li><b>Household income is dropped.</b> SSB has no data for 7 of the 15 counties, so it is removed by the coverage rule.</li>
+                    <li><b>Small test set.</b> 7 quarters and 105 rows, with only 8 Stable rows. The Stable scores are indicative at best.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Next steps -->
+        <section class="window">
+            <div class="title-bar">
+                <div class="title-bar-text"><img src="/assets/icons/notepad.svg" alt="">next_steps.txt</div>
+                <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+            </div>
+            <div class="window-body sunken">
+                <p>
+                    As the task is defined now, it is close to a seasonal lookup, which leaves the model very little room
+                    to show real skill. The most useful change would be a harder and more meaningful target: label on
+                    seasonally adjusted or year-over-year price changes instead of raw quarter-on-quarter changes.
+                </p>
+                <p>
+                    That removes the yearly cycle from the target, so the macroeconomic features would have to carry actual
+                    signal. Since it changes what the project claims to predict, it is left as explicit future work.
+                </p>
             </div>
         </section>
     </div>
@@ -229,54 +332,43 @@
             </div>
             <div class="window-body">
                 <ul class="chip-list">
-                    <li>Python 3.12+</li>
+                    <li>Python</li>
                     <li>scikit-learn</li>
-                    <li>Pandas</li>
+                    <li>pandas</li>
                     <li>NumPy</li>
                     <li>Matplotlib</li>
                     <li>Seaborn</li>
                     <li>SSB API</li>
                 </ul>
-                <p class="caption" style="margin-top: 8px;">Original from-scratch Random Forest kept as reference implementation.</p>
             </div>
         </section>
         <section class="window">
             <div class="title-bar">
-                <div class="title-bar-text"><img src="/assets/icons/globe.svg" alt="">Counties Covered</div>
+                <div class="title-bar-text"><img src="/assets/icons/notepad.svg" alt="">background.txt</div>
                 <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
             </div>
-            <div class="window-body">
-                <ul class="chip-list teal">
-                    <li>Oslo</li>
-                    <li>Rogaland</li>
-                    <li>Vestland</li>
-                    <li>Tr&oslash;ndelag</li>
-                    <li>Innlandet</li>
-                    <li>Agder</li>
-                    <li>Nordland</li>
-                    <li>M&oslash;re og Romsdal</li>
-                    <li>Viken</li>
-                    <li>Vestfold og Telemark</li>
-                    <li>Troms og Finnmark</li>
-                </ul>
-                <p class="caption" style="margin-top: 8px;">15 counties, 2005&ndash;2024.</p>
+            <div class="window-body sunken">
+                <p>
+                    It started as a Random Forest written from scratch to learn how it works: Gini impurity, bootstrap
+                    sampling, random feature subsets and majority voting. Trained on 80 hand-downloaded samples, it reached
+                    67% validation accuracy and could not predict Stable at all. The automated SSB pipeline expanded the data
+                    to all 15 counties, and the project moved to scikit-learn's ensemble classifiers.
+                </p>
+                <p class="caption">
+                    <a href="https://www.anthropic.com/claude">Claude Opus 4.6</a> was used as a development tool throughout the project.
+                </p>
             </div>
         </section>
     </div>
-
-    <section class="window">
-        <div class="window-body caption">
-            <a href="https://www.anthropic.com/claude">Claude Opus 4.6</a> was used as a development tool throughout the project.
-        </div>
-    </section>
 
 </main>
 
 <nav class="start-menu" id="start-menu" aria-label="Start menu">
     <a href="/"><img src="/assets/icons/computer.svg" alt="">Home</a>
+    <a href="/datanorge/"><img src="/assets/icons/map.svg" alt="">DataNorge</a>
     <a href="/coursecatalog/"><img src="/assets/icons/exe.svg" alt="">Course Catalog</a>
     <a href="/housingclassifier/"><img src="/assets/icons/chart.svg" alt="">Housing Classifier</a>
-    <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer"><img src="/assets/icons/globe.svg" alt="">Claude Usage Bar</a>
+    <a href="https://chromewebstore.google.com/detail/usage-bar-for-claude-limi/imblbfhdbdecholhjbagcjahdkhidneb" target="_blank" rel="noopener noreferrer"><img src="/assets/usage-bar-icon.png" alt="">Usage Bar for Claude</a>
     <hr>
     <a href="https://github.com/disi910" target="_blank" rel="noopener"><img src="/assets/icons/github.svg" alt="">GitHub</a>
 </nav>
