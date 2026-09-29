@@ -4,6 +4,8 @@ Personal portfolio site at **didriksi.com**: a Docker Compose monorepo with a Wi
 
 ## Deployment (VPS)
 
+**Setting up a new server? Follow [DEPLOY.md](DEPLOY.md)** (netcup VPS, Namecheap DNS, Docker, Let's Encrypt, first data load). The HTTPS certificate must exist before the first `docker compose up`, or nginx won't start.
+
 ### Prerequisites
 - Docker and Docker Compose installed on the VPS
 - SSL certificates from Let's Encrypt at `/etc/letsencrypt/`
