@@ -1,6 +1,6 @@
 # Deploying didriksi.com on a netcup VPS
 
-A complete, from-scratch setup: netcup VPS (Ubuntu 24.04) + Namecheap DNS + Docker Compose + Let's Encrypt.
+A complete, from-scratch setup: netcup VPS (Ubuntu 24.04 or Debian 13; every command works on both) + Namecheap DNS + Docker Compose + Let's Encrypt.
 
 Commands marked **Mac** run on your own computer. Everything else runs on the server.
 Replace `SERVER_IP` with your VPS's IPv4 address everywhere.
@@ -149,15 +149,17 @@ free -h   # Swap should now show 4.0Gi
 
 ## 4. Install Docker
 
-Docker's official repository (not Ubuntu's `docker.io` package, which lacks the Compose plugin):
+Docker's official repository (not the distro's `docker.io` package, which lacks the Compose plugin). These commands work on both Ubuntu and Debian: `/etc/os-release` supplies the distro (`$ID`, `ubuntu` or `debian`) and its release codename (for example `noble` or `trixie`).
 
 ```bash
+. /etc/os-release && echo "$ID $VERSION_CODENAME"   # e.g. "ubuntu noble" or "debian trixie"
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo curl -fsSL "https://download.docker.com/linux/$ID/gpg" -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$ID $VERSION_CODENAME stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+docker --version   # must print a version before you continue
 ```
 
 Cap container log size, so logs can't fill the disk:
