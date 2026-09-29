@@ -16,7 +16,6 @@ Didrik Sivertsen's personal portfolio, **live at https://didriksi.com**. A Docke
   - CourseCatalog PR #14 and #15: Win98 restyle, taskbar.
   - DataNorge PR #4: sub-path production build.
 - **Open items (not done, ask before doing):**
-  - DataNorge's own UI still contains about 22 em dashes. Left alone, because DataNorge keeps its own design.
   - `icon128.png` in the claude-usage-bar repo is the old icon; the new one is `landing/assets/usage-bar-icon.png`.
   - There's no `robots.txt`; crawlers get a 404.
 
@@ -33,7 +32,7 @@ Didrik Sivertsen's personal portfolio, **live at https://didriksi.com**. A Docke
 
 ## Conventions
 
-- **No em dashes anywhere on the website** (the user's rule). Use a colon, a comma or a full stop. Check with `grep -rn -e '—' -e '&mdash;' landing/`. This covers HTML, JS strings, CSS comments and demo data. For plot images, crop the title instead of shipping an em dash.
+- **No em dashes anywhere on the website** (the user's rule). Use a colon, a comma or a full stop. Check with `grep -rn -e '—' -e '&mdash;' landing/`. This covers HTML, JS strings, CSS comments and demo data. For plot images, crop the title instead of shipping an em dash. **Exception:** DataNorge's UI uses "—" as its "no value" placeholder in tables and cards. That's intentional; leave it.
 - **Win98 look** for the landing page, project pages and Course Catalog. Reuse the `win98.css` components (`.window`, `.title-bar`, `.btn`, `.taskbar`, `.list-view`, `.tag`) rather than adding new styles. **DataNorge keeps its own design**; don't restyle it.
 - **The same taskbar/Start menu appears in three places:** `landing/index.html`, `landing/housingclassifier/index.html`, and `CourseCatalog/apps/web/ififag/src/components/Taskbar.tsx`. When adding a project or changing a link, update all three.
 - **Project cards** (`landing/index.html`): the stretched title link covers the card, the GitHub icon sits top-right, an external link gets a ↗ arrow, and tools are shown as `.tool-tags`.
