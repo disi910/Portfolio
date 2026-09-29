@@ -2,6 +2,8 @@
 
 A complete, from-scratch setup: netcup VPS (Ubuntu 24.04 or Debian 13; every command works on both) + Namecheap DNS + Docker Compose + Let's Encrypt.
 
+This is the runbook that was used for the current production server (netcup VPS nano, **Debian 13 "trixie"**, user `deploy`, code in `/home/deploy/Portfolio`), first deployed on 2026-09-29. Use it again to rebuild the server from scratch or to move to a new host. For how the running system works and day-to-day tasks (updates, logs, backups, restore, troubleshooting), see [docs/OPERATIONS.md](docs/OPERATIONS.md).
+
 Commands marked **Mac** run on your own computer. Everything else runs on the server.
 Replace `SERVER_IP` with your VPS's IPv4 address everywhere.
 
@@ -21,10 +23,10 @@ Have these ready:
 
 ---
 
-## 1. Install Ubuntu on the VPS (netcup SCP)
+## 1. Install the OS on the VPS (netcup SCP)
 
 1. Log in to the SCP and open your VPS nano.
-2. Go to **Media → Images** and install **Ubuntu 24.04.5 UEFI amd64 (Minimal)**. Not 26.04 (this guide targets 24.04), not the "cloudimg" or "openclaw" variants. If offered, choose one big partition, and paste your public key (`cat ~/.ssh/id_ed25519.pub` on your Mac) as the SSH key. Note the root password the installer shows or emails you.
+2. Go to **Media → Images** and install **Ubuntu 24.04.5 UEFI amd64 (Minimal)** or **Debian 13**. Not Ubuntu 26.04 (untested here), and not the "cloudimg" or "openclaw" variants. If offered, choose one big partition, and paste your public key (`cat ~/.ssh/id_ed25519.pub` on your Mac) as the SSH key. Note the root password the installer shows or emails you. Check what you actually got with `cat /etc/os-release` after logging in: the production server ended up on Debian 13, and everything below works on it.
 3. Copy the server's **IPv4 address** from the SCP (server overview or the network page).
 4. Log in (**Mac**). The first line clears the old Hetzner host key, which would otherwise block the connection with a "REMOTE HOST IDENTIFICATION HAS CHANGED" error:
    ```bash
@@ -287,6 +289,8 @@ All 9 services should be `Up` or `running`: `nginx`, `landing`, `feed`, `coursec
 docker compose restart nginx   # makes nginx pick up the final container addresses
 ```
 
+The restart may print a spinner line like `Container portfolio-nginx-1 Restarting 0.6s` as the prompt returns. That's only progress output. Check the real state with `docker compose ps nginx` (it should say `Up …`, not `Restarting`) and `docker compose logs nginx --tail 15` (no `[emerg]` lines). The log line `can not modify /etc/nginx/conf.d/default.conf (read-only file system?)` is expected: the config is mounted read-only on purpose.
+
 If a service keeps restarting, run `docker compose logs <service>` to see why.
 
 ---
@@ -349,51 +353,14 @@ docker compose ps nginx        # must be running again
 systemctl list-timers | grep certbot
 ```
 
+certbot prints `Hook 'pre-hook' ran with error output:` followed by Docker's `Stopping`/`Started` lines. That's not an error: Docker writes progress messages to stderr, and certbot labels anything there as "error output".
+
 Finally, open https://didriksi.com in a browser and click through every project.
 
 ---
 
-## 11. Day-to-day
+## 11. Set up backups
 
-### Deploy an update
+Both databases live only on this server. Set up the nightly backup job described in [docs/OPERATIONS.md → Backups](docs/OPERATIONS.md#backups) now, and test it once.
 
-```bash
-cd ~/Portfolio
-git pull
-git submodule update --init --recursive
-docker compose up -d --build
-docker compose restart nginx
-docker image prune -f
-```
-
-### Nightly database backups
-
-```bash
-mkdir -p ~/backups
-cat > ~/backup.sh <<'EOF'
-#!/bin/sh
-set -e
-cd /home/deploy/Portfolio
-d=$(date +%F)
-docker compose exec -T coursecatalog-db pg_dump -U postgres coursecatalog | gzip > /home/deploy/backups/coursecatalog-$d.sql.gz
-docker compose exec -T datanorge-db pg_dump -U datasenter datasenter | gzip > /home/deploy/backups/datanorge-$d.sql.gz
-find /home/deploy/backups -name '*.sql.gz' -mtime +7 -delete
-EOF
-chmod +x ~/backup.sh
-~/backup.sh && ls -lh ~/backups   # test it once
-(crontab -l 2>/dev/null; echo '15 3 * * * /home/deploy/backup.sh >> /home/deploy/backups/backup.log 2>&1') | crontab -
-```
-
-These backups live on the same server. Copy them off now and then (**Mac**): `scp -r deploy@SERVER_IP:backups ./didriksi-backups`.
-
-### Troubleshooting
-
-| Symptom | Fix |
-|---|---|
-| 502 Bad Gateway after a rebuild | `docker compose restart nginx` |
-| nginx exits with "cannot load certificate" | Step 7 wasn't done, or the domain name differs: `sudo ls /etc/letsencrypt/live/` |
-| certbot fails with "Timeout during connect" | DNS doesn't point here yet (step 2), port 80 is blocked (`sudo ufw status`), or something is already using port 80 |
-| A build dies or the server freezes | Out of memory: check `free -h`, add swap (step 3), and build one service at a time: `docker compose build coursecatalog-frontend` |
-| Course Catalog shows errors | `docker compose logs coursecatalog-api`; an empty DB means step 9 wasn't run |
-| DataNorge map is empty | `curl -s https://didriksi.com/datanorge/api/health` must show `"db":true`, then re-run step 9 |
-| Disk filling up | `df -h /`, then `docker builder prune -f` and `docker image prune -f` |
+After that, everything else (deploying updates, logs, restore, troubleshooting) is in [docs/OPERATIONS.md](docs/OPERATIONS.md).

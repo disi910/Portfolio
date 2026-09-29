@@ -1,123 +1,82 @@
 # Portfolio
 
-Personal portfolio site at **didriksi.com**: a Docker Compose monorepo with a Windows 98-style landing page (about, live activity feed, Spotify player, projects), the CourseCatalog and DataNorge apps (git submodules), and the HousingMarketClassifier write-up.
+Personal portfolio site, live at **https://didriksi.com**.
 
-## Deployment (VPS)
+A Docker Compose monorepo with:
 
-**Setting up a new server? Follow [DEPLOY.md](DEPLOY.md)** (netcup VPS, Namecheap DNS, Docker, Let's Encrypt, first data load). The HTTPS certificate must exist before the first `docker compose up`, or nginx won't start.
+- a Windows 98-style landing page: about, a live activity feed (GitHub, LeetCode, Letterboxd, status posts), a Winamp-style Spotify window, and project cards;
+- **Course Catalog** at `/coursecatalog/` (git submodule, [disi910/CourseCatalog](https://github.com/disi910/CourseCatalog));
+- **DataNorge** at `/datanorge/`, a register of Norway's data centers (git submodule, [disi910/DataNorge](https://github.com/disi910/DataNorge));
+- the **Housing Market Classifier** write-up at `/housingclassifier/` (code in [disi910/HousingMarketClassifier](https://github.com/disi910/HousingMarketClassifier));
+- a link to the **Usage Bar for Claude** Chrome extension ([disi910/claude-usage-bar](https://github.com/disi910/claude-usage-bar)).
 
-### Prerequisites
-- Docker and Docker Compose installed on the VPS
-- SSL certificates from Let's Encrypt at `/etc/letsencrypt/`
-- A `.env` file in the project root with production secrets:
-  ```
-  DB_PASSWORD=<postgres password>
-  SECRET_KEY=<api secret key>
-  API_KEY=<api key>
-  DATANORGE_DB_PASSWORD=<postgis password for DataNorge>
-  # optional activity feed settings - see .env.example
-  ```
+## Documentation
 
-### Deploy
-```bash
-ssh user@didriksi.com
-cd ~/Portfolio
-git pull --recurse-submodules
-git submodule update --init --recursive   # Ensure submodule is checked out
-docker compose up --build -d
-docker compose restart nginx              # Refresh upstream DNS after rebuild
+| Document | For |
+|---|---|
+| [DEPLOY.md](DEPLOY.md) | Setting up a server from scratch (netcup VPS, Namecheap DNS, Docker, HTTPS, first data load) |
+| [docs/OPERATIONS.md](docs/OPERATIONS.md) | How production works, deploying updates, logs, backups and restore, certificates, troubleshooting |
+| [feed/README.md](feed/README.md) | The activity feed service: sources, endpoints, Spotify setup, local run, tests |
+| [CLAUDE.md](CLAUDE.md) | Project status, conventions and pitfalls (for Claude Code sessions, and useful for humans too) |
+
+## Architecture
+
+All traffic enters through nginx on ports 80/443. HTTP redirects to HTTPS.
+
+| Path | Service | What it is |
+|---|---|---|
+| `/` | `landing` | Static Win98 landing page |
+| `/housingclassifier/` | `landing` | Static project page |
+| `/api/` | `feed` | Activity feed + Spotify (FastAPI + SQLite), see [feed/](feed/) |
+| `/coursecatalog/` | `coursecatalog-frontend` | React SPA |
+| `/coursecatalog/api/` | `coursecatalog-api` → `coursecatalog-db` | FastAPI → PostgreSQL 16 |
+| `/datanorge/` | `datanorge-web` | React + MapLibre (keeps its own design) |
+| `/datanorge/api/` | `datanorge-api` → `datanorge-db` | FastAPI (GET only) → PostGIS |
+
+Production runs on a netcup VPS (Debian 13), with Let's Encrypt certificates mounted from the host. Details in [docs/OPERATIONS.md](docs/OPERATIONS.md).
+
+## Repository layout
+
 ```
-
-### DataNorge: first deploy (one time)
-DataNorge starts with an empty PostGIS database. After the first `docker compose up --build -d`, create the schema and load the data. Every job is idempotent, so re-running is safe:
-```bash
-docker compose exec datanorge-api alembic -c db/alembic.ini upgrade head
-docker compose exec datanorge-api pipeline load-kommuner         # 357 kommune polygons (Kartverket)
-docker compose exec datanorge-api pipeline load-ssb-electricity  # population + electricity per kommune (SSB)
-docker compose exec datanorge-api pipeline load-nkom-operators   # Nkom operator register (seed file)
-docker compose exec datanorge-api pipeline seed-top-sites        # the 58 data centers
-docker compose exec datanorge-api pipeline enrich-brreg          # ownership details from BRREG
-docker compose exec datanorge-api pipeline load-key-articles     # sources on the methodology page
+landing/                 static site (served by the `landing` container)
+  index.html             landing page
+  housingclassifier/     project page + plots
+  assets/css/            win98.css (shared design system), home.css, project.css
+  assets/js/             home.js (feed + music), taskbar.js (Start menu + clock)
+  assets/icons/          pixel-art + brand SVG icons
+  assets/demo/           sample data for ?demo mode
+feed/                    activity feed service (FastAPI)
+nginx/nginx.conf         reverse proxy, TLS, rate limits
+docker-compose.yml       all 9 services
+CourseCatalog/           submodule
+DataNorge/               submodule
+DEPLOY.md, docs/         deployment and operations docs
 ```
-Order matters: `seed-top-sites` needs the kommune polygons, and `enrich-brreg` needs the organizations the earlier jobs create. Do **not** run `seed-research-sites`: each seed job replaces the previous seed, so it would swap the 58 sites for an older list of 20. Check the result with `curl -s https://didriksi.com/datanorge/api/health` (`"db": true`).
-
-The extra PostGIS database uses roughly 100-200 MB of RAM on the VPS.
-
-### After schema changes
-If the CourseCatalog API fails with `column ... does not exist`, a migration is needed.
-Alembic may fail on existing objects — in that case, apply the change manually:
-```bash
-docker compose exec coursecatalog-db psql -U postgres -d coursecatalog -c "<ALTER TABLE ...>"
-docker compose restart coursecatalog-api
-```
-
-### Troubleshooting
-- **502 Bad Gateway**: Nginx has stale container IPs after a rebuild. Fix: `docker compose restart nginx`
-- **API 500 errors**: Check `docker compose logs coursecatalog-api` — usually a missing DB column or failed migration
-- **Submodule not updated**: `git pull --recurse-submodules` fetches but doesn't checkout. Run `git submodule update --init --recursive` separately
-- **`docker compose restart` appears frozen**: This is normal — it completes but doesn't always print "done". Verify with `docker compose ps`
-
-### Useful commands
-```bash
-docker compose logs -f              # Follow all logs
-docker compose logs -f nginx        # Follow specific service
-docker compose down                 # Stop all services
-docker compose ps                   # Check running containers
-docker compose exec coursecatalog-db psql -U postgres -d coursecatalog  # DB shell
-```
-
-### Architecture
-All traffic enters via Nginx on ports 80/443:
-- `/` → static landing page
-- `/coursecatalog/` → CourseCatalog React SPA
-- `/coursecatalog/api/` → CourseCatalog FastAPI backend
-- `/housingclassifier/` → HousingMarketClassifier static page
-- `/api/` → activity feed service (`feed/`, FastAPI + SQLite)
-- `/datanorge/` → DataNorge React + MapLibre app (keeps its own design, not the Win98 theme)
-- `/datanorge/api/` → DataNorge FastAPI (read-only, GET only) → PostGIS
 
 ## Design system
-All pages share `landing/assets/css/win98.css` (tokens + window, button, taskbar, list-view components) and the icons in `landing/assets/icons/`. Pages add their own layout CSS (`home.css`, `project.css`) and include the same taskbar markup plus `assets/js/taskbar.js`. CourseCatalog vendors a copy of the same tokens in its own repo so it builds standalone.
 
-Preview locally without the backend: `cd landing && python3 -m http.server 8765`, then open `http://localhost:8765/?demo` (the `?demo` flag renders bundled sample data from `landing/assets/demo/`).
+All pages share `landing/assets/css/win98.css` (colour tokens, windows, buttons, taskbar, list views) and the icons in `landing/assets/icons/`. Pages add their own layout CSS (`home.css`, `project.css`) and include the same taskbar markup plus `assets/js/taskbar.js`. Course Catalog keeps a copy of the same tokens in its own repo, so it builds on its own. DataNorge deliberately keeps its own design.
 
-## Activity feed (`feed/`)
-Polls public activity into SQLite and serves it to the landing page:
+## Local development
 
-| Source | What shows up | Config | Poll |
-|---|---|---|---|
-| GitHub | pushes, merged/opened PRs, new repos, releases, stars | `GITHUB_USERNAME`, optional `GITHUB_TOKEN` | 5 min |
-| LeetCode | accepted submissions with difficulty | `LEETCODE_USERNAME` | 10 min |
-| Letterboxd | films logged, with rating | `LETTERBOXD_USERNAME` | 30 min |
-| Status | manual one-liners you post | `FEED_API_KEY` | — |
-| Spotify | now playing + recently played (separate window, not stored) | `SPOTIFY_CLIENT_ID/SECRET/REFRESH_TOKEN` | on request, 30 s cache |
+Preview the static site without any backend:
 
-Every source is optional; one failing source backs off (up to 1 h) without affecting the others.
-
-Endpoints (behind `/api/`): `GET /feed?limit=&before=&source=`, `GET /music`, `POST /status`, `DELETE /status/{id}`, `GET /health`.
-
-**Spotify setup (one time):** create an app at developer.spotify.com with redirect URI `http://127.0.0.1:8888/callback`, then on your own machine run
-`SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=... python feed/scripts/spotify_auth.py` and put the printed refresh token in `.env`.
-
-**Post a status:**
 ```bash
-curl -X POST https://didriksi.com/api/status -H "X-API-Key: $FEED_API_KEY" \
-     -H "Content-Type: application/json" -d '{"text": "Exam prep week", "url": null}'
+cd landing && python3 -m http.server 8765
+# open http://localhost:8765/?demo   (?demo renders bundled sample feed and music data)
 ```
 
-**Privacy:** the feed only uses public data (public GitHub events, public LeetCode/Letterboxd profiles). Spotify is the exception — it exposes what you're listening to in near real time, so leave its variables empty if you don't want that.
+Preview with the real feed service: see [feed/README.md → Run locally](feed/README.md#run-locally).
 
-**Run locally** (Python 3.10+). Use `python -m ...` so the venv's interpreter is used even if another environment such as conda's `(base)` is active:
+Run everything as in production (needs Docker, a `.env` based on [.env.example](.env.example), and a certificate; see [DEPLOY.md](DEPLOY.md)):
+
 ```bash
-cd feed
-python3 -m venv .venv && source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=... SPOTIFY_REFRESH_TOKEN=...   # any sources you want
-python -m uvicorn app.main:create_app --factory --port 8000     # terminal 1
-python scripts/dev_site.py                                       # terminal 2, then open http://127.0.0.1:8080
+git clone --recurse-submodules https://github.com/disi910/Portfolio.git
+docker compose up -d --build
 ```
 
-**Tests:** `cd feed && python -m pytest`
+## Tests
 
-HTTP is redirected to HTTPS. SSL certs are mounted from the host's `/etc/letsencrypt/`.
-
+```bash
+cd feed && python -m pytest
+```
