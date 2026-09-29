@@ -24,7 +24,7 @@ Have these ready:
 ## 1. Install Ubuntu on the VPS (netcup SCP)
 
 1. Log in to the SCP and open your VPS nano.
-2. Go to **Media → Images** and install **Ubuntu 24.04**. If offered, choose one big partition, and paste your public key (`cat ~/.ssh/id_ed25519.pub` on your Mac) as the SSH key. Note the root password the installer shows or emails you.
+2. Go to **Media → Images** and install **Ubuntu 24.04.5 UEFI amd64 (Minimal)**. Not 26.04 (this guide targets 24.04), not the "cloudimg" or "openclaw" variants. If offered, choose one big partition, and paste your public key (`cat ~/.ssh/id_ed25519.pub` on your Mac) as the SSH key. Note the root password the installer shows or emails you.
 3. Copy the server's **IPv4 address** from the SCP (server overview or the network page).
 4. Log in (**Mac**). The first line clears the old Hetzner host key, which would otherwise block the connection with a "REMOTE HOST IDENTIFICATION HAS CHANGED" error:
    ```bash
@@ -73,7 +73,7 @@ Do this now, so DNS has time to update while you set up the server.
 
 ```bash
 apt update && apt full-upgrade -y
-apt install -y git curl ca-certificates dnsutils ufw unattended-upgrades
+apt install -y git curl ca-certificates dnsutils ufw unattended-upgrades nano openssl
 timedatectl set-timezone Europe/Oslo
 ```
 
