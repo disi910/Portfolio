@@ -156,7 +156,7 @@ gunzip -c ~/backups/datanorge-2026-09-30.sql.gz | docker compose exec -T datanor
 docker compose start datanorge-api
 ```
 
-The feed's SQLite database isn't backed up: it refills itself from GitHub, LeetCode and Letterboxd within minutes. Only manual status posts would be lost.
+The feed's SQLite database isn't backed up: it refills itself from GitHub and LeetCode within minutes. Only manual status posts would be lost.
 
 ## HTTPS certificates
 

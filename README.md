@@ -4,7 +4,7 @@ Personal portfolio site, live at **https://didriksi.com**.
 
 A Docker Compose monorepo with:
 
-- a Windows 98-style landing page: about, a live activity feed (GitHub, LeetCode, Letterboxd, status posts), a Winamp-style Spotify window, and project cards;
+- a Windows 98-style landing page: about, a live activity feed (GitHub, LeetCode, status posts), a Winamp-style Spotify window, and project cards;
 - **Course Catalog** at `/coursecatalog/` (git submodule, [disi910/CourseCatalog](https://github.com/disi910/CourseCatalog));
 - **DataNorge** at `/datanorge/`, a register of Norway's data centers (git submodule, [disi910/DataNorge](https://github.com/disi910/DataNorge));
 - the **Housing Market Classifier** write-up at `/housingclassifier/` (code in [disi910/HousingMarketClassifier](https://github.com/disi910/HousingMarketClassifier));

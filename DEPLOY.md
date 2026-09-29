@@ -223,7 +223,6 @@ FEED_API_KEY=$(openssl rand -hex 32)
 GITHUB_USERNAME=disi910
 GITHUB_TOKEN=
 LEETCODE_USERNAME=LordQuas
-LETTERBOXD_USERNAME=didster2
 SPOTIFY_CLIENT_ID=
 SPOTIFY_CLIENT_SECRET=
 SPOTIFY_REFRESH_TOKEN=
@@ -342,7 +341,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://didriksi.com/datanorge/        
 curl -s https://didriksi.com/datanorge/api/health; echo                          # {"status":"ok","db":true}
 curl -s https://didriksi.com/api/feed | head -c 150; echo                        # {"events":[...
 curl -s https://didriksi.com/api/music; echo                                     # {"enabled":...
-docker compose logs feed | head -5   # "enabled sources: github, leetcode, letterboxd; spotify: ..."
+docker compose logs feed | head -5   # "enabled sources: github, leetcode; spotify: ..."
 ```
 
 Test certificate renewal. This stops nginx for a few seconds and starts it again:

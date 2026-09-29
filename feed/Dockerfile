@@ -1,4 +1,4 @@
-# Feed service: polls GitHub / LeetCode / Letterboxd into SQLite and proxies Spotify.
+# Feed service: polls GitHub / LeetCode into SQLite and proxies Spotify.
 # Internal only - main nginx proxies /api/ traffic here.
 FROM python:3.12-slim
 

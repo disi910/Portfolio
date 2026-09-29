@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   # === ACTIVITY FEED ===
-  # Polls GitHub / LeetCode / Letterboxd into SQLite and proxies Spotify now-playing
+  # Polls GitHub / LeetCode into SQLite and proxies Spotify now-playing
   # Every source is optional - it only runs if its variables are set in .env
   # Internal only - main nginx proxies /api/ traffic here
   feed:
@@ -54,7 +54,6 @@ services:
       - GITHUB_USERNAME=${GITHUB_USERNAME:-}
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - LEETCODE_USERNAME=${LEETCODE_USERNAME:-}
-      - LETTERBOXD_USERNAME=${LETTERBOXD_USERNAME:-}
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID:-}
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET:-}
       - SPOTIFY_REFRESH_TOKEN=${SPOTIFY_REFRESH_TOKEN:-}
