@@ -4,254 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Didrik Sivertsen</title>
-    <style>
-        :root {
-            --navy: #003366;
-            --teal: #008080;
-            --dark-teal: #006666;
-            --silver: #c0c0c0;
-            --light-gray: #e8e8e8;
-            --bg-gray: #f0f0f0;
-            --dark-gray: #666666;
-            --white: #ffffff;
-            --black: #000000;
-            --border-dark: #999999;
-            --border-light: #cccccc;
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Verdana, Tahoma, Geneva, Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.5;
-            color: var(--black);
-            background-color: var(--bg-gray);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Marquee */
-        .marquee {
-            background-color: var(--navy);
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            padding: 4px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            border-bottom: 2px solid var(--dark-teal);
-        }
-
-        .marquee-text {
-            display: inline-block;
-            white-space: nowrap;
-            animation: marquee-scroll 22s linear infinite;
-            padding-left: 100%;
-        }
-
-        @keyframes marquee-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* Main content */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 960px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 16px;
-        }
-
-        .name {
-            font-family: Georgia, 'Times New Roman', Times, serif;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--navy);
-            text-align: center;
-            margin-bottom: 6px;
-        }
-
-        .subtitle {
-            font-size: 12px;
-            color: var(--dark-gray);
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        /* Project cards */
-        .projects-panel {
-            background-color: var(--white);
-            border: 2px solid var(--border-dark);
-            width: 100%;
-            max-width: 520px;
-        }
-
-        .projects-header {
-            background-color: var(--navy);
-            color: var(--white);
-            font-family: Verdana, Tahoma, sans-serif;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-bottom: 2px solid var(--border-dark);
-        }
-
-        .projects-body {
-            padding: 12px;
-        }
-
-        .project-link {
-            display: block;
-            background-color: var(--white);
-            border: 1px solid var(--border-dark);
-            border-left: 4px solid var(--teal);
-            padding: 10px 12px;
-            margin-bottom: 8px;
-            text-decoration: none;
-            color: inherit;
-            cursor: pointer;
-        }
-
-        .project-link:last-child {
-            margin-bottom: 0;
-        }
-
-        .project-link:hover {
-            background-color: #ffffcc;
-            border-left-color: var(--navy);
-        }
-
-        .project-title {
-            font-family: Verdana, Tahoma, sans-serif;
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--navy);
-            margin-bottom: 2px;
-        }
-
-        .project-badge {
-            display: inline-block;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 1px 6px;
-            border: 1px solid var(--border-dark);
-            margin-bottom: 4px;
-        }
-
-        .badge-web {
-            background-color: var(--teal);
-            color: var(--white);
-            border-color: var(--dark-teal);
-        }
-
-        .badge-ml {
-            background-color: var(--navy);
-            color: var(--white);
-            border-color: #0055aa;
-        }
-
-        .badge-extension {
-            background-color: #cc6633;
-            color: var(--white);
-            border-color: #994422;
-        }
-
-        .project-link.with-logo {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .project-logo {
-            width: 32px;
-            height: 32px;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .project-link.with-logo .project-content {
-            flex: 1;
-        }
-
-        .project-desc {
-            font-size: 11px;
-            color: var(--dark-gray);
-        }
-
-        /* Status bar */
-        .status-bar {
-            background-color: var(--light-gray);
-            border-top: 2px inset var(--silver);
-            padding: 2px 8px;
-            font-size: 10px;
-            color: var(--dark-gray);
-            text-align: center;
-            margin-top: auto;
-        }
-
-        .status-bar a {
-            color: #0000cc;
-            text-decoration: underline;
-        }
-
-        .status-bar a:hover {
-            color: #cc0000;
-        }
-    </style>
+    <meta name="description" content="Didrik Sivertsen: MSc student in Computer Science and Engineering at DTU, specializing in AI and Algorithms. Projects and a live feed of what I'm working on.">
+    <link rel="icon" href="/assets/icons/computer.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/win98.css">
+    <link rel="stylesheet" href="/assets/css/home.css">
 </head>
 <body>
 
-    <div class="marquee">
-        <div class="marquee-text">
-            *** didriksi.com *** Personal projects and experiments *** Last updated: March 2026 ***
+<main class="desktop">
+
+    <!-- ============ ABOUT ============ -->
+    <section class="window about opening" aria-labelledby="about-title">
+        <div class="title-bar">
+            <div class="title-bar-text" id="about-title"><img src="/assets/icons/computer.svg" alt="">about_me.exe</div>
+            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
         </div>
-    </div>
-
-    <div class="main">
-        <div class="name">Didrik Sivertsen</div>
-        <div class="subtitle">Projects &amp; experiments</div>
-
-        <div class="projects-panel">
-            <div class="projects-header">Projects</div>
-            <div class="projects-body">
-                <a href="/coursecatalog" class="project-link">
-                    <span class="project-badge badge-web">WEB APP</span>
-                    <div class="project-title">Course Catalog</div>
-                    <div class="project-desc">Browse and explore university courses with filtering, search, and dependency visualization.</div>
-                </a>
-                <a href="/housingclassifier" class="project-link">
-                    <span class="project-badge badge-ml">ML</span>
-                    <div class="project-title">Housing Market Classifier</div>
-                    <div class="project-desc">Classifies the Norwegian housing market as HOT, STABLE, or COOLING using a Random Forest built from scratch.</div>
-                </a>
-                <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb"
-                   class="project-link with-logo" target="_blank" rel="noopener noreferrer">
-                    <img src="/assets/claude-logo.png" alt="Claude logo" class="project-logo">
-                    <div class="project-content">
-                        <span class="project-badge badge-extension">EXTENSION</span>
-                        <div class="project-title">Claude Usage Bar</div>
-                        <div class="project-desc">Chrome extension that surfaces your Claude usage and weekly limits at a glance. Available on the Chrome Web Store.</div>
-                    </div>
-                </a>
+        <div class="window-body">
+            <div class="about-inner">
+                <div class="avatar" aria-hidden="true">
+                    <!-- Replace with a real photo: <img src="/assets/me.jpg" alt=""> -->
+                    <span>DS</span>
+                </div>
+                <div class="about-text">
+                    <h1>Didrik Sivertsen</h1>
+                    <p class="headline">Computer Science | AI/ML | Software Engineering</p>
+                    <p>
+                        MSc student in Computer Science and Engineering at DTU, specializing in AI and Algorithms.
+                        I'm intrigued by application of machine learning to data-heavy problems, and especially
+                        where data can explain or predict financial and economic behavior.
+                    </p>
+                </div>
             </div>
+            <nav class="socials" aria-label="Social links">
+                <a class="btn" href="https://github.com/disi910" target="_blank" rel="noopener"><img src="/assets/icons/github.svg" alt="">GitHub</a>
+                <a class="btn" href="https://www.linkedin.com/in/didrik-sivertsen/" target="_blank" rel="noopener"><img src="/assets/icons/linkedin.svg" alt="">LinkedIn</a>
+                <a class="btn" href="https://leetcode.com/u/LordQuas/" target="_blank" rel="noopener"><img src="/assets/icons/leetcode.svg" alt="">LeetCode</a>
+                <a class="btn" href="https://letterboxd.com/didster2/" target="_blank" rel="noopener"><img src="/assets/icons/letterboxd.svg" alt="">Letterboxd</a>
+                <a class="btn" href="mailto:didrik2004@icloud.com"><img src="/assets/icons/mail.svg" alt="">Email</a>
+            </nav>
         </div>
+        <div class="status-bar">
+            <p class="status-bar-field">Oslo, Norway / Copenhagen, Denmark</p>
+            <p class="status-bar-field grow-0" id="about-status">&#9679; Online</p>
+        </div>
+    </section>
+
+    <div class="row row-feed">
+
+        <!-- ============ LIVE FEED ============ -->
+        <section class="window feed opening" aria-labelledby="feed-title">
+            <div class="title-bar">
+                <div class="title-bar-text" id="feed-title"><img src="/assets/icons/notepad.svg" alt="">live_feed.log<span class="cursor" aria-hidden="true">_</span></div>
+                <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+            </div>
+            <div class="toolbar" role="group" aria-label="Filter feed by source">
+                <button class="btn btn-sm" data-source="all" aria-pressed="true">All</button>
+                <span class="toolbar-sep" aria-hidden="true"></span>
+                <button class="btn btn-sm" data-source="github" aria-pressed="false"><img src="/assets/icons/github.svg" alt="">GitHub</button>
+                <button class="btn btn-sm" data-source="leetcode" aria-pressed="false"><img src="/assets/icons/leetcode.svg" alt="">LeetCode</button>
+                <button class="btn btn-sm" data-source="letterboxd" aria-pressed="false"><img src="/assets/icons/letterboxd.svg" alt="">Films</button>
+                <button class="btn btn-sm" data-source="status" aria-pressed="false"><img src="/assets/icons/status.svg" alt="">Status</button>
+            </div>
+            <div class="window-body sunken feed-body">
+                <ol class="timeline" id="timeline" aria-live="polite" aria-busy="true">
+                    <li class="timeline-loading">Loading activity<span class="dots"></span></li>
+                </ol>
+                <div class="feed-more">
+                    <button class="btn btn-sm" id="load-more" hidden>Load older&hellip;</button>
+                </div>
+            </div>
+            <div class="status-bar">
+                <p class="status-bar-field" id="feed-status">Connecting&hellip;</p>
+                <p class="status-bar-field grow-0" id="feed-count">0 events</p>
+            </div>
+        </section>
+
+        <!-- ============ MUSIC ============ -->
+        <section class="window music opening" aria-labelledby="music-title">
+            <div class="title-bar">
+                <div class="title-bar-text" id="music-title"><img src="/assets/icons/cd.svg" alt="">winamp.exe</div>
+                <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+            </div>
+            <div class="window-body music-body">
+                <div class="player" id="player">
+                    <div class="player-art"><img id="np-art" src="/assets/icons/cd.svg" alt=""></div>
+                    <div class="player-info">
+                        <div class="lcd">
+                            <div class="lcd-state" id="np-state">&#9632; STOPPED</div>
+                            <div class="lcd-marquee"><span id="np-title">Nothing playing</span></div>
+                            <div class="lcd-artist" id="np-artist">&nbsp;</div>
+                        </div>
+                        <div class="eq" id="eq" aria-hidden="true">
+                            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="seek" aria-hidden="true"><div class="seek-fill" id="np-progress"></div></div>
+                <div class="playlist-head">
+                    <span>RECENTLY PLAYED</span>
+                    <a id="np-link" href="#" target="_blank" rel="noopener" hidden>open in Spotify &raquo;</a>
+                </div>
+                <ol class="playlist" id="playlist">
+                    <li class="playlist-empty">no history</li>
+                </ol>
+            </div>
+            <div class="status-bar">
+                <p class="status-bar-field"><img class="sb-icon" src="/assets/icons/spotify.svg" alt="">Spotify</p>
+                <p class="status-bar-field grow-0" id="music-status">offline</p>
+            </div>
+        </section>
     </div>
 
-    <div class="status-bar">
-        <a href="/coursecatalog">Course Catalog</a> | <a href="/housingclassifier">Housing Classifier</a> | <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer">Claude Usage Bar</a> | &copy; 2026 Didrik Sivertsen
-    </div>
+    <!-- ============ PROJECTS ============ -->
+    <section class="window projects opening" aria-labelledby="projects-title">
+        <div class="title-bar">
+            <div class="title-bar-text" id="projects-title"><img src="/assets/icons/folder.svg" alt="">C:\Projects</div>
+            <div class="title-bar-controls" aria-hidden="true"><span>_</span><span>□</span><span>×</span></div>
+        </div>
+        <div class="menu-bar" aria-hidden="true"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+        <div class="window-body sunken">
+            <ul class="project-grid">
+                <li>
+                    <a class="project" href="/coursecatalog/">
+                        <img class="project-icon" src="/assets/icons/exe.svg" alt="">
+                        <div>
+                            <span class="tag">Web app</span>
+                            <h3>Course Catalog</h3>
+                            <p class="muted">Browse and explore university courses with filtering, search, and dependency visualization.</p>
+                            <p class="stack mono">React &middot; TypeScript &middot; FastAPI &middot; PostgreSQL</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a class="project" href="/housingclassifier/">
+                        <img class="project-icon" src="/assets/icons/chart.svg" alt="">
+                        <div>
+                            <span class="tag tag-navy">ML</span>
+                            <h3>Housing Market Classifier</h3>
+                            <p class="muted">Classifies the Norwegian housing market as HOT, STABLE, or COOLING, with 86.5% test accuracy on SSB data.</p>
+                            <p class="stack mono">Python &middot; scikit-learn &middot; SSB API</p>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a class="project" href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer">
+                        <img class="project-icon" src="/assets/claude-logo.png" alt="">
+                        <div>
+                            <span class="tag tag-orange">Extension</span>
+                            <h3>Claude Usage Bar</h3>
+                            <p class="muted">Chrome extension that surfaces your Claude usage and weekly limits at a glance. On the Chrome Web Store.</p>
+                            <p class="stack mono">JavaScript &middot; Chrome MV3</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="status-bar">
+            <p class="status-bar-field">3 object(s)</p>
+            <p class="status-bar-field grow-0">My Computer</p>
+        </div>
+    </section>
 
+</main>
+
+<!-- ============ TASKBAR ============ -->
+<nav class="start-menu" id="start-menu" aria-label="Start menu">
+    <a href="/"><img src="/assets/icons/computer.svg" alt="">Home</a>
+    <a href="/coursecatalog/"><img src="/assets/icons/exe.svg" alt="">Course Catalog</a>
+    <a href="/housingclassifier/"><img src="/assets/icons/chart.svg" alt="">Housing Classifier</a>
+    <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer"><img src="/assets/icons/globe.svg" alt="">Claude Usage Bar</a>
+    <hr>
+    <a href="https://github.com/disi910" target="_blank" rel="noopener"><img src="/assets/icons/github.svg" alt="">GitHub</a>
+</nav>
+<footer class="taskbar">
+    <button class="btn start-btn" id="start-btn" aria-expanded="false" aria-controls="start-menu"><img src="/assets/icons/start.svg" alt="">Start</button>
+    <div class="taskbar-items">
+        <a class="btn taskbar-item current" href="/"><img src="/assets/icons/computer.svg" alt=""><span>didriksi.com</span></a>
+        <a class="btn taskbar-item" href="/coursecatalog/"><img src="/assets/icons/exe.svg" alt=""><span>Course Catalog</span></a>
+        <a class="btn taskbar-item" href="/housingclassifier/"><img src="/assets/icons/chart.svg" alt=""><span>Housing Classifier</span></a>
+    </div>
+    <div class="tray">
+        <span class="tray-copy">&copy; 2026 Didrik S.</span>
+        <time id="clock">--:--</time>
+    </div>
+</footer>
+
+<script src="/assets/js/taskbar.js" defer></script>
+<script src="/assets/js/home.js" defer></script>
 </body>
 </html>

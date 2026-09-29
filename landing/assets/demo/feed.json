@@ -1,0 +1,123 @@
+{
+ "events": [
+  {
+   "id": "github:1",
+   "source": "github",
+   "kind": "push",
+   "title": "Pushed 3 commits to disi910/Portfolio",
+   "url": "https://github.com/disi910/Portfolio",
+   "detail": "Add Win98 design system and live feed",
+   "ts": "2026-09-28T14:18:00Z",
+   "meta": {
+    "repo": "disi910/Portfolio",
+    "count": 3
+   }
+  },
+  {
+   "id": "leetcode:1",
+   "source": "leetcode",
+   "kind": "solved",
+   "title": "Solved 206. Reverse Linked List",
+   "url": "https://leetcode.com/problems/reverse-linked-list/",
+   "detail": null,
+   "ts": "2026-09-28T13:35:00Z",
+   "meta": {
+    "difficulty": "Easy",
+    "lang": "Python3"
+   }
+  },
+  {
+   "id": "status:1",
+   "source": "status",
+   "kind": "post",
+   "title": "Exam prep week at DTU: algorithms all week",
+   "url": null,
+   "detail": null,
+   "ts": "2026-09-28T11:30:00Z",
+   "meta": {}
+  },
+  {
+   "id": "github:2",
+   "source": "github",
+   "kind": "pr_merged",
+   "title": "Merged PR #13 in disi910/CourseCatalog",
+   "url": "https://github.com/disi910/CourseCatalog",
+   "detail": "Fix API vulnerabilities",
+   "ts": "2026-09-28T09:30:00Z",
+   "meta": {}
+  },
+  {
+   "id": "leetcode:2",
+   "source": "leetcode",
+   "kind": "solved",
+   "title": "Solved 42. Trapping Rain Water",
+   "url": "https://leetcode.com/problems/trapping-rain-water/",
+   "detail": null,
+   "ts": "2026-09-27T16:30:00Z",
+   "meta": {
+    "difficulty": "Hard",
+    "lang": "Python3"
+   }
+  },
+  {
+   "id": "letterboxd:1",
+   "source": "letterboxd",
+   "kind": "watched",
+   "title": "Watched Perfect Days (2023)",
+   "url": "https://letterboxd.com/",
+   "detail": null,
+   "ts": "2026-09-27T12:30:00Z",
+   "meta": {
+    "rating": 4.5,
+    "rewatch": false
+   }
+  },
+  {
+   "id": "github:3",
+   "source": "github",
+   "kind": "release",
+   "title": "Released v1.2.0 of disi910/claude-usage-bar",
+   "url": "https://github.com/disi910",
+   "detail": null,
+   "ts": "2026-09-26T13:30:00Z",
+   "meta": {}
+  },
+  {
+   "id": "leetcode:3",
+   "source": "leetcode",
+   "kind": "solved",
+   "title": "Solved 3. Longest Substring Without Repeating Characters",
+   "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+   "detail": null,
+   "ts": "2026-09-26T10:30:00Z",
+   "meta": {
+    "difficulty": "Medium",
+    "lang": "Java"
+   }
+  },
+  {
+   "id": "github:4",
+   "source": "github",
+   "kind": "create_repo",
+   "title": "Created repository disi910/HousingMarketClassifier",
+   "url": "https://github.com/disi910",
+   "detail": null,
+   "ts": "2026-09-24T14:30:00Z",
+   "meta": {}
+  },
+  {
+   "id": "letterboxd:2",
+   "source": "letterboxd",
+   "kind": "watched",
+   "title": "Rewatched The Social Network (2010)",
+   "url": "https://letterboxd.com/",
+   "detail": null,
+   "ts": "2026-09-23T14:30:00Z",
+   "meta": {
+    "rating": 4,
+    "rewatch": true
+   }
+  }
+ ],
+ "has_more": false
+}

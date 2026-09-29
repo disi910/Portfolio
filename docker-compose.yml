@@ -6,6 +6,7 @@
 #     /coursecatalog/      -> coursecatalog-frontend (React app)
 #     /coursecatalog/api/  -> coursecatalog-api (FastAPI)
 #     /housingclassifier/  -> landing (static HTML, different path)
+#     /api/                -> feed (activity feed + Spotify for the landing page)
 #
 # Run with: docker compose up --build
 # Run in background: docker compose up --build -d
@@ -29,6 +30,7 @@ services:
       - landing
       - coursecatalog-frontend
       - coursecatalog-api
+      - feed
     restart: unless-stopped
 
   # === LANDING PAGE ===
@@ -36,6 +38,25 @@ services:
   # Internal only - nginx proxies traffic to it
   landing:
     build: ./landing          # Build from ./landing/Dockerfile
+    restart: unless-stopped
+
+  # === ACTIVITY FEED ===
+  # Polls GitHub / LeetCode / Letterboxd into SQLite and proxies Spotify now-playing
+  # Every source is optional - it only runs if its variables are set in .env
+  # Internal only - main nginx proxies /api/ traffic here
+  feed:
+    build: ./feed
+    environment:
+      - GITHUB_USERNAME=${GITHUB_USERNAME:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - LEETCODE_USERNAME=${LEETCODE_USERNAME:-}
+      - LETTERBOXD_USERNAME=${LETTERBOXD_USERNAME:-}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID:-}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET:-}
+      - SPOTIFY_REFRESH_TOKEN=${SPOTIFY_REFRESH_TOKEN:-}
+      - FEED_API_KEY=${FEED_API_KEY:-}
+    volumes:
+      - feeddata:/data        # SQLite event store survives rebuilds
     restart: unless-stopped
 
   # === COURSECATALOG FRONTEND ===
@@ -79,3 +100,4 @@ services:
 # Run 'docker volume ls' to see them, 'docker volume inspect pgdata' for details
 volumes:
   pgdata:
+  feeddata:

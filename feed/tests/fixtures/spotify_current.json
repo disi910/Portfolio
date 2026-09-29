@@ -1,0 +1,8 @@
+{"is_playing": true, "progress_ms": 94000, "currently_playing_type": "track",
+ "item": {"name": "Everything In Its Right Place", "duration_ms": 251000,
+          "artists": [{"name": "Radiohead"}],
+          "album": {"name": "Kid A", "images": [
+             {"url": "https://i.scdn.co/image/640", "width": 640, "height": 640},
+             {"url": "https://i.scdn.co/image/300", "width": 300, "height": 300},
+             {"url": "https://i.scdn.co/image/64", "width": 64, "height": 64}]},
+          "external_urls": {"spotify": "https://open.spotify.com/track/abc"}}}
