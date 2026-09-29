@@ -1,3 +1,6 @@
 [submodule "CourseCatalog"]
 	path = CourseCatalog
 	url = https://github.com/disi910/CourseCatalog.git
+[submodule "DataNorge"]
+	path = DataNorge
+	url = https://github.com/disi910/DataNorge.git

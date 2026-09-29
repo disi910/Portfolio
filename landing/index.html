@@ -126,44 +126,77 @@
         </div>
         <div class="menu-bar" aria-hidden="true"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
         <div class="window-body sunken">
+            <!-- Each card: the title link is stretched over the whole card; the corner icons sit above it. -->
             <ul class="project-grid">
                 <li>
-                    <a class="project" href="/coursecatalog/">
-                        <img class="project-icon" src="/assets/icons/exe.svg" alt="">
-                        <div>
+                    <article class="project">
+                        <img class="project-icon" src="/assets/icons/map.svg" alt="">
+                        <div class="project-body">
                             <span class="tag">Web app</span>
-                            <h3>Course Catalog</h3>
+                            <h3><a class="project-link" href="/datanorge/">DataNorge</a></h3>
+                            <p class="muted">Map and register of Norway's data centers: where they are, who owns them, how much power they draw, and how that compares to the kommune they sit in.</p>
+                            <ul class="tool-tags" aria-label="Tools">
+                                <li>React</li><li>TypeScript</li><li>MapLibre</li><li>FastAPI</li><li>PostGIS</li>
+                            </ul>
+                        </div>
+                        <div class="project-actions">
+                            <a class="icon-btn" href="https://github.com/disi910/DataNorge" target="_blank" rel="noopener" aria-label="DataNorge on GitHub" title="View on GitHub"><img src="/assets/icons/github.svg" alt=""></a>
+                        </div>
+                    </article>
+                </li>
+                <li>
+                    <article class="project">
+                        <img class="project-icon" src="/assets/icons/exe.svg" alt="">
+                        <div class="project-body">
+                            <span class="tag">Web app</span>
+                            <h3><a class="project-link" href="/coursecatalog/">Course Catalog</a></h3>
                             <p class="muted">Browse and explore university courses with filtering, search, and dependency visualization.</p>
-                            <p class="stack mono">React &middot; TypeScript &middot; FastAPI &middot; PostgreSQL</p>
+                            <ul class="tool-tags" aria-label="Tools">
+                                <li>React</li><li>TypeScript</li><li>FastAPI</li><li>PostgreSQL</li>
+                            </ul>
                         </div>
-                    </a>
+                        <div class="project-actions">
+                            <a class="icon-btn" href="https://github.com/disi910/CourseCatalog" target="_blank" rel="noopener" aria-label="Course Catalog on GitHub" title="View on GitHub"><img src="/assets/icons/github.svg" alt=""></a>
+                        </div>
+                    </article>
                 </li>
                 <li>
-                    <a class="project" href="/housingclassifier/">
+                    <article class="project">
                         <img class="project-icon" src="/assets/icons/chart.svg" alt="">
-                        <div>
+                        <div class="project-body">
                             <span class="tag tag-navy">ML</span>
-                            <h3>Housing Market Classifier</h3>
-                            <p class="muted">Classifies the Norwegian housing market as HOT, STABLE, or COOLING, with 86.5% test accuracy on SSB data.</p>
-                            <p class="stack mono">Python &middot; scikit-learn &middot; SSB API</p>
+                            <h3><a class="project-link" href="/housingclassifier/">Housing Market Classifier</a></h3>
+                            <p class="muted">Predicts whether each Norwegian county's housing market turns Hot, Stable or Cooling next quarter from SSB data, and finds that a simple seasonal baseline matches the model.</p>
+                            <ul class="tool-tags" aria-label="Tools">
+                                <li>Python</li><li>scikit-learn</li><li>pandas</li><li>SSB API</li>
+                            </ul>
                         </div>
-                    </a>
+                        <div class="project-actions">
+                            <a class="icon-btn" href="https://github.com/disi910/HousingMarketClassifier" target="_blank" rel="noopener" aria-label="Housing Market Classifier on GitHub" title="View on GitHub"><img src="/assets/icons/github.svg" alt=""></a>
+                        </div>
+                    </article>
                 </li>
                 <li>
-                    <a class="project" href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer">
-                        <img class="project-icon" src="/assets/claude-logo.png" alt="">
-                        <div>
+                    <article class="project">
+                        <img class="project-icon" src="/assets/usage-bar-icon.png" alt="">
+                        <div class="project-body">
                             <span class="tag tag-orange">Extension</span>
-                            <h3>Claude Usage Bar</h3>
-                            <p class="muted">Chrome extension that surfaces your Claude usage and weekly limits at a glance. On the Chrome Web Store.</p>
-                            <p class="stack mono">JavaScript &middot; Chrome MV3</p>
+                            <h3><a class="project-link" href="https://chromewebstore.google.com/detail/usage-bar-for-claude-limi/imblbfhdbdecholhjbagcjahdkhidneb" target="_blank" rel="noopener noreferrer">Usage Bar for Claude<span class="sr-only"> (opens the Chrome Web Store in a new tab)</span></a></h3>
+                            <p class="muted">Chrome extension that shows your Claude usage limits, a live context-window token counter and a prompt-cache countdown directly on claude.ai.</p>
+                            <ul class="tool-tags" aria-label="Tools">
+                                <li>JavaScript</li><li>Chrome MV3</li>
+                            </ul>
                         </div>
-                    </a>
+                        <div class="project-actions">
+                            <a class="icon-btn" href="https://github.com/disi910/claude-usage-bar" target="_blank" rel="noopener" aria-label="Usage Bar for Claude on GitHub" title="View on GitHub"><img src="/assets/icons/github.svg" alt=""></a>
+                            <span class="external-mark" aria-hidden="true" title="Opens an external site">&#8599;</span>
+                        </div>
+                    </article>
                 </li>
             </ul>
         </div>
         <div class="status-bar">
-            <p class="status-bar-field">3 object(s)</p>
+            <p class="status-bar-field">4 object(s)</p>
             <p class="status-bar-field grow-0">My Computer</p>
         </div>
     </section>
@@ -173,9 +206,10 @@
 <!-- ============ TASKBAR ============ -->
 <nav class="start-menu" id="start-menu" aria-label="Start menu">
     <a href="/"><img src="/assets/icons/computer.svg" alt="">Home</a>
+    <a href="/datanorge/"><img src="/assets/icons/map.svg" alt="">DataNorge</a>
     <a href="/coursecatalog/"><img src="/assets/icons/exe.svg" alt="">Course Catalog</a>
     <a href="/housingclassifier/"><img src="/assets/icons/chart.svg" alt="">Housing Classifier</a>
-    <a href="https://chromewebstore.google.com/detail/imblbfhdbdecholhjbagcjahdkhidneb?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer"><img src="/assets/icons/globe.svg" alt="">Claude Usage Bar</a>
+    <a href="https://chromewebstore.google.com/detail/usage-bar-for-claude-limi/imblbfhdbdecholhjbagcjahdkhidneb" target="_blank" rel="noopener noreferrer"><img src="/assets/usage-bar-icon.png" alt="">Usage Bar for Claude</a>
     <hr>
     <a href="https://github.com/disi910" target="_blank" rel="noopener"><img src="/assets/icons/github.svg" alt="">GitHub</a>
 </nav>

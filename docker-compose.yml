@@ -7,6 +7,8 @@
 #     /coursecatalog/api/  -> coursecatalog-api (FastAPI)
 #     /housingclassifier/  -> landing (static HTML, different path)
 #     /api/                -> feed (activity feed + Spotify for the landing page)
+#     /datanorge/          -> datanorge-web (React + MapLibre, its own design)
+#     /datanorge/api/      -> datanorge-api (FastAPI) -> datanorge-db (PostGIS)
 #
 # Run with: docker compose up --build
 # Run in background: docker compose up --build -d
@@ -31,6 +33,8 @@ services:
       - coursecatalog-frontend
       - coursecatalog-api
       - feed
+      - datanorge-web
+      - datanorge-api
     restart: unless-stopped
 
   # === LANDING PAGE ===
@@ -96,8 +100,57 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
 
+  # === DATANORGE WEB ===
+  # Static React + MapLibre build, served under /datanorge/ (keeps its own design)
+  # Internal only - main nginx proxies /datanorge/ traffic here
+  datanorge-web:
+    build:
+      context: ./DataNorge
+      dockerfile: infra/Dockerfile.web.prod
+      args:
+        VITE_BASE_PATH: /datanorge/
+        VITE_API_BASE_URL: /datanorge/api
+    restart: unless-stopped
+
+  # === DATANORGE API ===
+  # Read-only FastAPI serving GeoJSON; also contains the `pipeline` CLI for data loads
+  # Internal only - main nginx proxies /datanorge/api/ traffic here
+  datanorge-api:
+    build:
+      context: ./DataNorge
+      dockerfile: infra/Dockerfile.api
+    environment:
+      POSTGRES_USER: datasenter
+      POSTGRES_PASSWORD: ${DATANORGE_DB_PASSWORD:?DATANORGE_DB_PASSWORD must be set in .env}
+      POSTGRES_DB: datasenter
+      POSTGRES_HOST: datanorge-db
+      POSTGRES_PORT: 5432
+    depends_on:
+      datanorge-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # === DATANORGE DATABASE ===
+  # PostgreSQL + PostGIS for DataNorge (spatial queries on kommune polygons)
+  # Not exposed to the internet - only datanorge-api can reach it
+  datanorge-db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: datasenter
+      POSTGRES_PASSWORD: ${DATANORGE_DB_PASSWORD:?DATANORGE_DB_PASSWORD must be set in .env}
+      POSTGRES_DB: datasenter
+    volumes:
+      - datanorge-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U datasenter -d datasenter"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
 # Named volumes - Docker manages where these are stored on disk
 # Run 'docker volume ls' to see them, 'docker volume inspect pgdata' for details
 volumes:
   pgdata:
   feeddata:
+  datanorge-pgdata:

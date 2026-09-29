@@ -1,6 +1,6 @@
 # Portfolio
 
-Personal portfolio site at **didriksi.com** — a Docker Compose monorepo with a Windows 98-style landing page (about, live activity feed, Spotify player, projects), the CourseCatalog app, and the HousingMarketClassifier write-up.
+Personal portfolio site at **didriksi.com**: a Docker Compose monorepo with a Windows 98-style landing page (about, live activity feed, Spotify player, projects), the CourseCatalog and DataNorge apps (git submodules), and the HousingMarketClassifier write-up.
 
 ## Deployment (VPS)
 
@@ -12,6 +12,7 @@ Personal portfolio site at **didriksi.com** — a Docker Compose monorepo with a
   DB_PASSWORD=<postgres password>
   SECRET_KEY=<api secret key>
   API_KEY=<api key>
+  DATANORGE_DB_PASSWORD=<postgis password for DataNorge>
   # optional activity feed settings - see .env.example
   ```
 
@@ -24,6 +25,21 @@ git submodule update --init --recursive   # Ensure submodule is checked out
 docker compose up --build -d
 docker compose restart nginx              # Refresh upstream DNS after rebuild
 ```
+
+### DataNorge: first deploy (one time)
+DataNorge starts with an empty PostGIS database. After the first `docker compose up --build -d`, create the schema and load the data. Every job is idempotent, so re-running is safe:
+```bash
+docker compose exec datanorge-api alembic -c db/alembic.ini upgrade head
+docker compose exec datanorge-api pipeline load-kommuner         # 357 kommune polygons (Kartverket)
+docker compose exec datanorge-api pipeline load-ssb-electricity  # population + electricity per kommune (SSB)
+docker compose exec datanorge-api pipeline load-nkom-operators   # Nkom operator register (seed file)
+docker compose exec datanorge-api pipeline seed-top-sites        # the 58 data centers
+docker compose exec datanorge-api pipeline enrich-brreg          # ownership details from BRREG
+docker compose exec datanorge-api pipeline load-key-articles     # sources on the methodology page
+```
+Order matters: `seed-top-sites` needs the kommune polygons, and `enrich-brreg` needs the organizations the earlier jobs create. Do **not** run `seed-research-sites`: each seed job replaces the previous seed, so it would swap the 58 sites for an older list of 20. Check the result with `curl -s https://didriksi.com/datanorge/api/health` (`"db": true`).
+
+The extra PostGIS database uses roughly 100-200 MB of RAM on the VPS.
 
 ### After schema changes
 If the CourseCatalog API fails with `column ... does not exist`, a migration is needed.
@@ -55,6 +71,8 @@ All traffic enters via Nginx on ports 80/443:
 - `/coursecatalog/api/` → CourseCatalog FastAPI backend
 - `/housingclassifier/` → HousingMarketClassifier static page
 - `/api/` → activity feed service (`feed/`, FastAPI + SQLite)
+- `/datanorge/` → DataNorge React + MapLibre app (keeps its own design, not the Win98 theme)
+- `/datanorge/api/` → DataNorge FastAPI (read-only, GET only) → PostGIS
 
 ## Design system
 All pages share `landing/assets/css/win98.css` (tokens + window, button, taskbar, list-view components) and the icons in `landing/assets/icons/`. Pages add their own layout CSS (`home.css`, `project.css`) and include the same taskbar markup plus `assets/js/taskbar.js`. CourseCatalog vendors a copy of the same tokens in its own repo so it builds standalone.
