@@ -11,8 +11,8 @@ class Event:
     """
 
     id: str
-    source: str          # github | leetcode | letterboxd | status
-    kind: str            # push, pr_merged, solved, watched, post, ...
+    source: str          # github | leetcode | status
+    kind: str            # push, pr_merged, solved, post, ...
     title: str
     ts: datetime         # timezone-aware, UTC
     url: str | None = None

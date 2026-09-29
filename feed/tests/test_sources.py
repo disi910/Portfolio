@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from app import spotify
-from app.sources import github, leetcode, letterboxd
+from app.sources import github, leetcode
 
 FIX = Path(__file__).parent / "fixtures"
 
@@ -54,19 +54,6 @@ def test_leetcode_normalize():
     assert a.meta == {"difficulty": "Easy", "lang": "Python3"}
     assert b.title == "Solved Mystery"  # no question metadata cached
     assert b.meta["lang"] == "zig"
-
-
-def test_letterboxd_normalize_skips_lists():
-    events = letterboxd.normalize((FIX / "letterboxd.xml").read_text())
-    assert [e.id for e in events] == ["letterboxd:letterboxd-review-111", "letterboxd:letterboxd-watch-222"]
-
-    first, second = events
-    assert first.title == "Watched Perfect Days (2023)"
-    assert first.meta == {"rating": 4.5, "rewatch": False}
-    assert first.ts == datetime(2026, 9, 27, 8, 11, 5, tzinfo=timezone.utc)  # +1200 converted to UTC
-
-    assert second.title == "Rewatched The Social Network (2010)"
-    assert second.meta == {"rating": None, "rewatch": True}
 
 
 def test_spotify_normalize():

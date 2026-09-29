@@ -60,19 +60,6 @@
    }
   },
   {
-   "id": "letterboxd:1",
-   "source": "letterboxd",
-   "kind": "watched",
-   "title": "Watched Perfect Days (2023)",
-   "url": "https://letterboxd.com/",
-   "detail": null,
-   "ts": "2026-09-27T12:30:00Z",
-   "meta": {
-    "rating": 4.5,
-    "rewatch": false
-   }
-  },
-  {
    "id": "github:3",
    "source": "github",
    "kind": "release",
@@ -104,19 +91,6 @@
    "detail": null,
    "ts": "2026-09-24T14:30:00Z",
    "meta": {}
-  },
-  {
-   "id": "letterboxd:2",
-   "source": "letterboxd",
-   "kind": "watched",
-   "title": "Rewatched The Social Network (2010)",
-   "url": "https://letterboxd.com/",
-   "detail": null,
-   "ts": "2026-09-23T14:30:00Z",
-   "meta": {
-    "rating": 4,
-    "rewatch": true
-   }
   }
  ],
  "has_more": false

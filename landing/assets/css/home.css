@@ -99,7 +99,6 @@
 .diff-easy { color: #00875a; font-weight: bold; }
 .diff-medium { color: #b77900; font-weight: bold; }
 .diff-hard { color: #c0161f; font-weight: bold; }
-.stars { color: #b77900; letter-spacing: 1px; }
 
 .event.new { animation: event-in 900ms ease-out both; }
 @keyframes event-in {

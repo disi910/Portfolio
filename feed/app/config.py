@@ -19,8 +19,6 @@ class Settings:
 
     leetcode_username: str = field(default_factory=lambda: _env("LEETCODE_USERNAME"))
 
-    letterboxd_username: str = field(default_factory=lambda: _env("LETTERBOXD_USERNAME"))
-
     spotify_client_id: str = field(default_factory=lambda: _env("SPOTIFY_CLIENT_ID"))
     spotify_client_secret: str = field(default_factory=lambda: _env("SPOTIFY_CLIENT_SECRET"))
     spotify_refresh_token: str = field(default_factory=lambda: _env("SPOTIFY_REFRESH_TOKEN"))

@@ -17,7 +17,6 @@
     const ICONS = {
         github: '/assets/icons/github.svg',
         leetcode: '/assets/icons/leetcode.svg',
-        letterboxd: '/assets/icons/letterboxd.svg',
         status: '/assets/icons/status.svg',
     };
 
@@ -116,13 +115,6 @@
             return el('span', { class: 'event-detail' },
                 el('span', { class: `diff-${d}` }, m.difficulty),
                 m.lang ? ` · ${m.lang}` : null);
-        }
-        if (ev.source === 'letterboxd' && m.rating != null) {
-            const full = Math.floor(m.rating || 0);
-            const half = (m.rating || 0) % 1 >= 0.5;
-            return el('span', { class: 'event-detail' },
-                el('span', { class: 'stars', title: `${m.rating} / 5` }, '★'.repeat(full) + (half ? '½' : '')),
-                ev.detail ? ` · ${ev.detail}` : null);
         }
         if (ev.detail) {
             return el('span', { class: 'event-detail' },

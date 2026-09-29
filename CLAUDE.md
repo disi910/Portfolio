@@ -9,7 +9,7 @@ Didrik Sivertsen's personal portfolio, **live at https://didriksi.com**. A Docke
 ## Current status (last updated 2026-09-29)
 
 - **Production:** netcup VPS nano, **Debian 13**, deployed 2026-09-29 by following [DEPLOY.md](DEPLOY.md). All 9 containers run, HTTPS works, and a certificate-renewal dry run passed. The previous Hetzner server is cancelled.
-- **Data:** Course Catalog seeded (`seed_server seed` + `add_new_courses`, `alembic stamp head`). DataNorge fully loaded (58 data centers). The feed shows GitHub, LeetCode and Letterboxd, and Spotify is configured.
+- **Data:** Course Catalog seeded (`seed_server seed` + `add_new_courses`, `alembic stamp head`). DataNorge fully loaded (58 data centers). The feed shows GitHub and LeetCode, and Spotify is configured.
 - **Backups:** the nightly `~/backup.sh` cron is documented in [docs/OPERATIONS.md](docs/OPERATIONS.md#backups). Confirm it's installed on the server with `crontab -l`; if it's an older version without `--clean --if-exists`, re-run the setup block.
 - **Merged work:**
   - Portfolio PR #5 and #6: Win98 redesign, feed service, project cards, Housing Classifier rewrite, DataNorge hosting.
@@ -55,6 +55,7 @@ Didrik Sivertsen's personal portfolio, **live at https://didriksi.com**. A Docke
 - **Secrets are hex** (`openssl rand -hex 32`), because `DB_PASSWORD` is embedded in a URL.
 - `postgis/postgis` is amd64-only.
 - **Local runs on the user's Mac:** conda's `(base)` shadows virtualenv binaries, so always use `python -m uvicorn` / `python -m pytest`.
+- **Removing a feed source:** `/feed` only returns sources listed in `SOURCES` (`feed/app/main.py`), so rows a removed source left in the live SQLite DB stay hidden without touching the database.
 - **GitHub's Events API trims PushEvent payloads.** `app/sources/github.py` handles missing commit lists and looks up the head commit message.
 
 ## Verifying changes

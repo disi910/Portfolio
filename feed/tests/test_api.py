@@ -51,6 +51,13 @@ def test_feed_pagination_and_filter(client):
     assert [e["id"] for e in only_lc["events"]] == ["leetcode:10"]
 
 
+def test_feed_hides_events_from_removed_sources(client):
+    # rows left in the live DB by a source that has since been removed
+    client.app.state.store.upsert([ev(1), ev(2, "retired")])
+    assert [e["id"] for e in client.get("/feed").json()["events"]] == ["github:1"]
+    assert client.get("/feed", params={"source": "retired"}).json()["events"][0]["id"] == "github:1"
+
+
 def test_feed_rejects_bad_before(client):
     assert client.get("/feed", params={"before": "yesterday"}).status_code == 400
 

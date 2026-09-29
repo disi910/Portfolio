@@ -29,7 +29,7 @@ log = logging.getLogger("feed")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 MAX_BACKOFF = 3600
-SOURCES = {"github", "leetcode", "letterboxd", "status"}
+SOURCES = {"github", "leetcode", "status"}
 
 
 async def poll_forever(source, client: httpx.AsyncClient, store: Store) -> None:
@@ -92,7 +92,8 @@ def create_app(settings: Settings | None = None, start_pollers: bool = True) -> 
             before_dt = parse_iso(before) if before else None
         except ValueError:
             raise HTTPException(status_code=400, detail="before must be an ISO-8601 timestamp")
-        wanted = [s for s in (source or "").split(",") if s in SOURCES] or None
+        # Always restrict to supported sources, so rows left by a removed source stay hidden.
+        wanted = [s for s in (source or "").split(",") if s in SOURCES] or sorted(SOURCES)
         events, has_more = store.query(limit=limit, before=before_dt, sources=wanted)
         response.headers["Cache-Control"] = "public, max-age=30"
         return {"events": [e.to_json() for e in events], "has_more": has_more}

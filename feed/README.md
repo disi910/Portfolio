@@ -8,11 +8,10 @@ FastAPI service behind `https://didriksi.com/api/`. It polls public activity int
 |---|---|---|---|
 | GitHub | pushes (with commit message), merged/opened PRs, new repos, releases, stars | `GITHUB_USERNAME`, optional `GITHUB_TOKEN` | 5 min |
 | LeetCode | accepted submissions, with number, difficulty and language | `LEETCODE_USERNAME` | 10 min |
-| Letterboxd | films logged in the diary, with rating | `LETTERBOXD_USERNAME` | 30 min |
 | Status | manual one-liners you post | `FEED_API_KEY` | instant |
 | Spotify | now playing + last 20 tracks (music window, not stored) | `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN` | on request, 30 s cache |
 
-- Every source is optional; it runs only if its variables are set. The startup log lists the enabled ones: `enabled sources: github, leetcode, letterboxd; spotify: True`.
+- Every source is optional; it runs only if its variables are set. The startup log lists the enabled ones: `enabled sources: github, leetcode; spotify: True`.
 - A failing source backs off exponentially (up to 1 hour) without affecting the others.
 - Events are stored with IDs like `github:<id>`, so re-fetching is idempotent.
 - Only public data is used, except Spotify, which shows what you're listening to in near real time.
@@ -50,7 +49,7 @@ Python 3.10+. Use `python -m ...`, so the virtualenv's interpreter runs even if 
 cd feed
 python3 -m venv .venv && source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
-export GITHUB_USERNAME=disi910 LEETCODE_USERNAME=LordQuas LETTERBOXD_USERNAME=didster2   # any sources you want
+export GITHUB_USERNAME=disi910 LEETCODE_USERNAME=LordQuas   # any sources you want
 python -m uvicorn app.main:create_app --factory --port 8000     # terminal 1
 python scripts/dev_site.py                                       # terminal 2, then open http://127.0.0.1:8080
 ```
@@ -71,7 +70,7 @@ The tests use recorded fixtures in `tests/fixtures/`, so they need no network.
 app/main.py        app factory, endpoints, per-source polling loops with backoff
 app/store.py       SQLite store (upsert, paginated query)
 app/spotify.py     token refresh + now playing / recently played, cached
-app/sources/       github.py, leetcode.py, letterboxd.py (fetch + normalize)
+app/sources/       github.py, leetcode.py (fetch + normalize)
 scripts/           spotify_auth.py (one-time OAuth), dev_site.py (local preview)
 tests/             normalizer, store and API tests
 ```
